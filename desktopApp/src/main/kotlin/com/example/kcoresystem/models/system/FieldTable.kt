@@ -1,4 +1,4 @@
-package com.dev.worker_management_crossplatform.models.system
+package com.example.kcoresystem.models.system
 
 import androidx.compose.ui.graphics.Color
 

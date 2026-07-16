@@ -1,4 +1,4 @@
-package com.dev.worker_management_crossplatform.presentation.ui.pages.auth
+package com.example.kcoresystem.presentation.ui.pages.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,22 +35,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.TrayState
 import androidx.compose.ui.window.rememberNotification
 import androidx.compose.ui.window.rememberTrayState
-import com.dev.worker_management_crossplatform.presentation.ui.components.core.grid.Grid
-import com.dev.worker_management_crossplatform.presentation.ui.components.elements.input.CustomOutlinedTextFieldCompact
-import com.dev.worker_management_crossplatform.presentation.ui.components.elements.spacer.Space
-import com.dev.worker_management_crossplatform.presentation.ui.components.elements.text.Paragraphe
-import com.dev.worker_management_crossplatform.presentation.ui.components.elements.text.Title
+import com.example.kcoresystem.presentation.ui.components.elements.spacer.Space
+import com.example.kcoresystem.presentation.ui.components.elements.text.Title
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import worker_management_crossplatform.composeapp.generated.resources.Res
-import worker_management_crossplatform.composeapp.generated.resources.blur
-import worker_management_crossplatform.composeapp.generated.resources.email
-import worker_management_crossplatform.composeapp.generated.resources.login
-import worker_management_crossplatform.composeapp.generated.resources.password_
-import worker_management_crossplatform.composeapp.generated.resources.user_add
 
 @Composable
 fun Login() {

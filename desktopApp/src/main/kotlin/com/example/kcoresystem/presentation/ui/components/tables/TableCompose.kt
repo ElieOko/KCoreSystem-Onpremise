@@ -1,10 +1,5 @@
-package com.dev.worker_management_crossplatform.presentation.ui.components.tables
+package com.example.kcoresystem.presentation.ui.components.tables
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
-import androidx.compose.foundation.gestures.scrollBy
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -27,10 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.dev.worker_management_crossplatform.models.core.Grade
-import com.dev.worker_management_crossplatform.models.system.FieldTable
-import com.dev.worker_management_crossplatform.presentation.ui.components.elements.spacer.Space
-import kotlinx.coroutines.launch
+import com.example.kcoresystem.models.system.FieldTable
+import com.example.kcoresystem.presentation.ui.components.elements.spacer.Space
 
 
 @Composable

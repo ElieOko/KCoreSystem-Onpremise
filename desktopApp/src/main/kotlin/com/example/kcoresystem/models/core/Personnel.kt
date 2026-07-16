@@ -1,4 +1,4 @@
-package com.dev.worker_management_crossplatform.models.core
+package com.example.kcoresystem.models.core
 
 data class Personnel(
     val id : Int,

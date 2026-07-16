@@ -1,7 +1,6 @@
 package com.dev.worker_management_crossplatform.presentation.ui.pages.home
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,13 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.dev.worker_management_crossplatform.models.system.FieldTable
 import com.dev.worker_management_crossplatform.presentation.ui.components.elements.spacer.Space
-import com.dev.worker_management_crossplatform.presentation.ui.components.sidebar.SideBarUi
-import com.dev.worker_management_crossplatform.presentation.ui.components.tables.TableCompose
-import com.dev.worker_management_crossplatform.presentation.ui.pages.personals.PersonnelMain
+import com.example.kcoresystem.presentation.ui.components.sidebar.SideBarUi
+import com.example.kcoresystem.presentation.ui.components.tables.TableCompose
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.skia.paragraph.Alignment
 import worker_management_crossplatform.composeapp.generated.resources.Res
 import worker_management_crossplatform.composeapp.generated.resources.menu
 import worker_management_crossplatform.composeapp.generated.resources.user_story
