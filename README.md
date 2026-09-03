@@ -1,29 +1,78 @@
-This is a Kotlin Multiplatform project targeting Desktop (JVM).
+# KCoreSystem — Statistiques Scolaires
 
-* [/shared](./shared/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-    - [commonMain](./shared/src/commonMain/kotlin) is for code that’s common for all targets.
-    - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-      For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-      the [iosMain](./shared/src/iosMain/kotlin) folder would be the right place for such calls.
-      Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./shared/src/jvmMain/kotlin)
-      folder is the appropriate location.
+Application professionnelle de **collecte, gestion, validation et centralisation des statistiques scolaires**, développée en **Kotlin Multiplatform** avec approche **Desktop First**.
 
-### Running the apps
+## Stack technique
 
-Use the run configurations provided by the run widget in your IDE's toolbar. You can also use these commands and
-options:
+| Composant | Technologie |
+|-----------|-------------|
+| UI | Compose Multiplatform + Material 3 |
+| Desktop | JVM (Windows, macOS, Linux) |
+| Backend | Supabase (PostgreSQL, Auth, Realtime, Storage) |
+| Base locale | SQLDelight (offline first) |
+| Architecture | Clean Architecture + MVVM |
+| DI | Koin |
 
-- Desktop app:
-    - Hot reload: `./gradlew :desktopApp:hotRun --auto`
-    - Standard run: `./gradlew :desktopApp:run`
+## Structure du projet
 
-### Running tests
+```
+KCoreSystem/
+├── desktopApp/          # Application Desktop (Phase 1)
+├── shared/              # Code KMP partagé (domain, data, presentation)
+├── supabase/            # Migrations PostgreSQL, RLS, vues agrégées
+└── docs/                # Documentation architecture
+```
 
-Use the run button in your IDE's editor gutter, or run tests using Gradle tasks:
+## Documentation
 
-- Desktop tests: `./gradlew :shared:jvmTest`
+| Document | Description |
+|----------|-------------|
+| [01-analyse-besoins.md](docs/01-analyse-besoins.md) | Analyse des besoins et acteurs |
+| [02-architecture-technique.md](docs/02-architecture-technique.md) | Architecture Clean + MVVM |
+| [03-structure-projet.md](docs/03-structure-projet.md) | Arborescence détaillée |
+| [04-modele-donnees.md](docs/04-modele-donnees.md) | Entités et relations |
+| [05-strategie-offline-sync.md](docs/05-strategie-offline-sync.md) | Offline first + synchronisation |
+| [06-plan-developpement.md](docs/06-plan-developpement.md) | Plan de développement progressif |
 
----
+## Démarrage rapide
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+### Prérequis
+
+- JDK 17+
+- Projet Supabase configuré (voir [supabase/README.md](supabase/README.md))
+
+### Configuration
+
+```bash
+cp local.properties.example local.properties
+# Remplir supabase.url et supabase.anon.key
+```
+
+### Lancer l'application Desktop
+
+```bash
+./gradlew :desktopApp:run
+```
+
+### Tests
+
+```bash
+./gradlew :shared:jvmTest
+```
+
+## État du projet
+
+**Phase actuelle** : Architecture et conception (Étape 0 ✅)
+
+**Prochaine étape** : Configuration projet KMP + dépendances (Étape 1)
+
+## Rôles utilisateurs
+
+- **Super Admin** — Gestion nationale
+- **Admin Provincial** — Vue province
+- **Admin Sous-Division** — Validation et centralisation (rôle principal Desktop)
+- **École** — Saisie et soumission des statistiques
+
+## Licence
+
+Projet privé — Tous droits réservés.

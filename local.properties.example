@@ -1,0 +1,6 @@
+# Configuration locale — NE PAS COMMITER
+
+# Copier ce fichier vers local.properties et remplir les valeurs
+
+supabase.url=https://your-project.supabase.co
+supabase.anon.key=your-anon-key-here
