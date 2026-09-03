@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "KCoreSystem Desktop",
+      "type": "java",
+      "request": "launch",
+      "preLaunchTask": "KCoreSystem: Build Desktop",
+      "mainClass": "com.schoolstats.desktop.MainKt",
+      "projectName": "desktopApp",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

@@ -50,8 +50,35 @@ cp local.properties.example local.properties
 
 ### Lancer l'application Desktop
 
+#### Option 1 — Terminal (recommandé)
+
 ```bash
 ./gradlew :desktopApp:run
+# ou raccourci :
+./gradlew runDesktop
+```
+
+#### Option 2 — Cursor / IntelliJ IDEA
+
+Le projet inclut des configurations de lancement partagées dans `.run/` :
+
+1. Ouvrez le sélecteur de configurations (en haut à droite)
+2. Choisissez **desktopApp**
+3. Cliquez sur **Run** (▶)
+
+Si la config n'apparaît pas : **Run → Edit Configurations → + → Gradle** → tâche `:desktopApp:run`
+
+#### Option 3 — VS Code / Cursor (tasks)
+
+1. `Ctrl+Shift+P` → **Tasks: Run Task**
+2. Sélectionnez **KCoreSystem: Run Desktop**
+
+Ou utilisez **Run and Debug** avec la config **KCoreSystem Desktop** (`.vscode/launch.json`).
+
+#### Créer un installateur Windows
+
+```bash
+./gradlew :desktopApp:packageMsi
 ```
 
 ### Mode démo (sans Supabase)
