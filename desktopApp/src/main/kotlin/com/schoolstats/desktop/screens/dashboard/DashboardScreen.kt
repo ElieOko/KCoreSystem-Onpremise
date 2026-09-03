@@ -46,6 +46,8 @@ fun DashboardContent(stats: DashboardStats) {
         "Écoles non soumises" to stats.schoolsNotSubmitted,
         "Total élèves" to stats.totalStudents,
         "Total enseignants" to stats.totalTeachers,
+        "Garçons" to stats.totalBoys,
+        "Filles" to stats.totalGirls,
     )
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text("Tableau de bord", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)

@@ -11,21 +11,29 @@ import com.schoolstats.data.sync.SyncManager
 import com.schoolstats.desktop.layout.MainLayout
 import com.schoolstats.desktop.navigation.AppRoute
 import com.schoolstats.desktop.navigation.routesForRole
-import com.schoolstats.desktop.screens.PlaceholderScreen
-import com.schoolstats.desktop.screens.PrimaryStatisticsScreen
 import com.schoolstats.desktop.screens.SubmissionsScreen
+import com.schoolstats.desktop.screens.analytics.AnalyticsScreen
 import com.schoolstats.desktop.screens.auth.LoginScreen
+import com.schoolstats.desktop.screens.centralization.CentralizationScreen
 import com.schoolstats.desktop.screens.dashboard.DashboardScreen
+import com.schoolstats.desktop.screens.reports.ReportsScreen
 import com.schoolstats.desktop.screens.schools.SchoolsScreen
+import com.schoolstats.desktop.screens.settings.SettingsScreen
+import com.schoolstats.desktop.screens.statistics.StatisticsScreen
+import com.schoolstats.desktop.screens.users.UsersScreen
+import com.schoolstats.desktop.screens.validation.ValidationScreen
 import com.schoolstats.presentation.theme.SchoolStatsTheme
 import com.schoolstats.presentation.viewmodel.AuthViewModel
+import com.schoolstats.presentation.viewmodel.SettingsViewModel
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AppDesktop() {
-    SchoolStatsTheme {
+    val settingsViewModel: SettingsViewModel = koinViewModel()
+    val settings by settingsViewModel.uiState.collectAsState()
+    SchoolStatsTheme(darkTheme = settings.darkTheme) {
         val authViewModel: AuthViewModel = koinViewModel()
         val syncManager: SyncManager = koinInject()
         val authState by authViewModel.uiState.collectAsState()
@@ -54,15 +62,15 @@ fun AppDesktop() {
                 when (currentRoute) {
                     AppRoute.Dashboard -> DashboardScreen()
                     AppRoute.Schools -> SchoolsScreen()
-                    AppRoute.Statistics -> PrimaryStatisticsScreen()
-                    AppRoute.Teachers -> PlaceholderScreen("Personnel enseignant", "Effectifs par niveau, branche et sexe.")
+                    AppRoute.Statistics -> StatisticsScreen()
+                    AppRoute.Teachers -> StatisticsScreen()
                     AppRoute.Submissions -> SubmissionsScreen()
-                    AppRoute.Validation -> PlaceholderScreen("Validation", "Vérification et validation des déclarations.")
-                    AppRoute.Centralization -> PlaceholderScreen("Centralisation", "Agrégation des statistiques de la Sous-Division.")
-                    AppRoute.Analytics -> PlaceholderScreen("Analyses", "Graphiques et analyses filtrables.")
-                    AppRoute.Reports -> PlaceholderScreen("Rapports", "Génération de rapports Excel et PDF.")
-                    AppRoute.Users -> PlaceholderScreen("Utilisateurs", "Gestion des comptes utilisateurs.")
-                    AppRoute.Settings -> PlaceholderScreen("Paramètres", "Configuration du système et synchronisation.")
+                    AppRoute.Validation -> ValidationScreen()
+                    AppRoute.Centralization -> CentralizationScreen()
+                    AppRoute.Analytics -> AnalyticsScreen()
+                    AppRoute.Reports -> ReportsScreen()
+                    AppRoute.Users -> UsersScreen()
+                    AppRoute.Settings -> SettingsScreen()
                 }
             }
         }

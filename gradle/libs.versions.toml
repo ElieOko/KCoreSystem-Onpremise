@@ -11,6 +11,8 @@ koin = "4.1.1"
 sqldelight = "2.1.0"
 supabase-kt = "3.2.2"
 ktor = "3.2.3"
+poi = "5.4.0"
+openpdf = "2.0.3"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -40,6 +42,8 @@ supabase-postgrest = { module = "io.github.jan-tennert.supabase:postgrest-kt" }
 supabase-realtime = { module = "io.github.jan-tennert.supabase:realtime-kt" }
 supabase-storage = { module = "io.github.jan-tennert.supabase:storage-kt" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+apache-poi = { module = "org.apache.poi:poi-ooxml", version.ref = "poi" }
+openpdf = { module = "com.github.librepdf:openpdf", version.ref = "openpdf" }
 
 [plugins]
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }

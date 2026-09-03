@@ -46,6 +46,8 @@ kotlin {
             implementation(libs.kotlinx.coroutinesSwing)
             implementation(libs.sqldelight.sqlite.driver)
             implementation(libs.ktor.client.cio)
+            implementation(libs.apache.poi)
+            implementation(libs.openpdf)
         }
         jvmTest.dependencies {
             implementation(libs.kotlin.testJunit)

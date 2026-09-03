@@ -1,5 +1,6 @@
 package com.schoolstats.domain.validation
 
+import com.schoolstats.domain.model.CertificationResult
 import com.schoolstats.domain.model.PrimaryClassStat
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -23,5 +24,21 @@ class StatValidatorTest {
     @Test
     fun `retention rate calculates correctly`() {
         assertEquals(80.0, StatValidator.retentionRate(beginning = 100, end = 80))
+    }
+
+    @Test
+    fun `certification rejects participants above registered`() {
+        val errors = StatValidator.validateCertification(
+            CertificationResult(
+                examName = "TENAFEP",
+                className = "6ème",
+                registeredCount = 10,
+                participantsCount = 12,
+                successesCount = 8,
+                boysSucceeded = 4,
+                girlsSucceeded = 4,
+            ),
+        )
+        assertTrue(errors.isNotEmpty())
     }
 }

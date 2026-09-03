@@ -118,6 +118,7 @@ fun Local_submission.toDomain(): Submission = Submission(
     schoolCode = school_code,
     submittedAt = submitted_at,
     rejectionReason = rejection_reason,
+    comment = admin_comment,
 )
 
 fun DashboardDto.toDomain(): DashboardStats = DashboardStats(

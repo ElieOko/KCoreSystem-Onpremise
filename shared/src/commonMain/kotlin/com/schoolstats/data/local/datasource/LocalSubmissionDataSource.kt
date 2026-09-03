@@ -39,6 +39,7 @@ class LocalSubmissionDataSource(
                 status = submission.status.name,
                 submitted_at = submission.submittedAt,
                 rejection_reason = submission.rejectionReason,
+                admin_comment = submission.comment,
                 sync_status = syncStatus.name,
                 updated_at = com.schoolstats.util.currentTimeMillis(),
             )
