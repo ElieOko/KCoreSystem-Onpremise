@@ -49,9 +49,19 @@ gantt
 
 ---
 
-## Étape 1 — Fondation projet KMP
+## Étape 1 — Fondation projet KMP ✅
 
-**Objectif** : Projet compilable avec toutes les dépendances.
+## Étape 2 — Schéma Supabase (migrations prêtes, déploiement manuel)
+
+## Étape 3 — Authentification ✅
+
+## Étape 4 — Layout Desktop + Navigation ✅
+
+## Étape 5 — SQLDelight + Sync Manager (base) ✅
+
+## Étape 6 — Gestion des Écoles ✅ (CRUD local + UI)
+
+## Étapes 7-15 — En cours / placeholders UI
 
 ### Tâches
 1. Renommer package `com.example.kcoresystem` → `com.schoolstats`

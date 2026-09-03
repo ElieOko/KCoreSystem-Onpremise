@@ -1,0 +1,28 @@
+CREATE TABLE local_submission (
+    id TEXT NOT NULL PRIMARY KEY,
+    remote_id TEXT,
+    school_id TEXT NOT NULL,
+    school_year_id TEXT NOT NULL,
+    school_name TEXT,
+    school_code TEXT,
+    status TEXT NOT NULL DEFAULT 'BROUILLON',
+    submitted_at TEXT,
+    rejection_reason TEXT,
+    sync_status TEXT NOT NULL DEFAULT 'PENDING_SYNC',
+    updated_at INTEGER NOT NULL
+);
+
+selectAllSubmissions:
+SELECT * FROM local_submission ORDER BY updated_at DESC;
+
+selectSubmissionsByStatus:
+SELECT * FROM local_submission WHERE status = :status ORDER BY updated_at DESC;
+
+upsertSubmission:
+INSERT OR REPLACE INTO local_submission(
+    id, remote_id, school_id, school_year_id, school_name, school_code,
+    status, submitted_at, rejection_reason, sync_status, updated_at
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+countSubmissionsByStatus:
+SELECT COUNT(*) FROM local_submission WHERE status = :status;

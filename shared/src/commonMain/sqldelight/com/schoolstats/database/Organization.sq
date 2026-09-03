@@ -1,0 +1,45 @@
+CREATE TABLE local_school (
+    id TEXT NOT NULL PRIMARY KEY,
+    remote_id TEXT,
+    subdivision_id TEXT NOT NULL,
+    subdivision_name TEXT,
+    name TEXT NOT NULL,
+    school_code TEXT NOT NULL,
+    dinacope_id TEXT,
+    address TEXT,
+    city TEXT,
+    school_type TEXT NOT NULL DEFAULT 'PRIMAIRE',
+    ownership TEXT NOT NULL DEFAULT 'PUBLIQUE',
+    environment TEXT,
+    is_active INTEGER NOT NULL DEFAULT 1,
+    submission_status TEXT,
+    sync_status TEXT NOT NULL DEFAULT 'PENDING_SYNC',
+    updated_at INTEGER NOT NULL,
+    is_deleted INTEGER NOT NULL DEFAULT 0
+);
+
+selectAllSchools:
+SELECT * FROM local_school WHERE is_deleted = 0 ORDER BY name ASC;
+
+searchSchools:
+SELECT * FROM local_school
+WHERE is_deleted = 0
+  AND (name LIKE '%' || :query || '%' OR school_code LIKE '%' || :query || '%')
+ORDER BY name ASC;
+
+selectSchoolById:
+SELECT * FROM local_school WHERE id = :id AND is_deleted = 0;
+
+upsertSchool:
+INSERT OR REPLACE INTO local_school(
+    id, remote_id, subdivision_id, subdivision_name, name, school_code, dinacope_id,
+    address, city, school_type, ownership, environment, is_active, submission_status,
+    sync_status, updated_at, is_deleted
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+markSchoolSynced:
+UPDATE local_school SET sync_status = :sync_status, remote_id = :remote_id, updated_at = :updated_at
+WHERE id = :id;
+
+countSchools:
+SELECT COUNT(*) FROM local_school WHERE is_deleted = 0;
