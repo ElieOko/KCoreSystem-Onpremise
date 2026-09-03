@@ -1,0 +1,105 @@
+CREATE TABLE local_secondary_stat (
+    id TEXT NOT NULL PRIMARY KEY,
+    submission_id TEXT NOT NULL,
+    section_name TEXT NOT NULL,
+    option_name TEXT,
+    class_name TEXT NOT NULL,
+    boys_count INTEGER NOT NULL DEFAULT 0,
+    girls_count INTEGER NOT NULL DEFAULT 0,
+    updated_at INTEGER NOT NULL
+);
+
+CREATE TABLE local_teacher_stat (
+    id TEXT NOT NULL PRIMARY KEY,
+    submission_id TEXT NOT NULL,
+    education_level TEXT NOT NULL,
+    branch TEXT NOT NULL,
+    men_count INTEGER NOT NULL DEFAULT 0,
+    women_count INTEGER NOT NULL DEFAULT 0,
+    updated_at INTEGER NOT NULL
+);
+
+CREATE TABLE local_enrollment_stat (
+    id TEXT NOT NULL PRIMARY KEY,
+    submission_id TEXT NOT NULL,
+    class_name TEXT NOT NULL,
+    boys_count INTEGER NOT NULL DEFAULT 0,
+    girls_count INTEGER NOT NULL DEFAULT 0,
+    is_beginning INTEGER NOT NULL DEFAULT 1,
+    updated_at INTEGER NOT NULL
+);
+
+CREATE TABLE local_certification_result (
+    id TEXT NOT NULL PRIMARY KEY,
+    submission_id TEXT NOT NULL,
+    exam_name TEXT NOT NULL,
+    class_name TEXT NOT NULL,
+    registered_count INTEGER NOT NULL DEFAULT 0,
+    participants_count INTEGER NOT NULL DEFAULT 0,
+    successes_count INTEGER NOT NULL DEFAULT 0,
+    boys_succeeded INTEGER NOT NULL DEFAULT 0,
+    girls_succeeded INTEGER NOT NULL DEFAULT 0,
+    updated_at INTEGER NOT NULL
+);
+
+CREATE TABLE local_notification (
+    id TEXT NOT NULL PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    title TEXT NOT NULL,
+    message TEXT NOT NULL,
+    type TEXT NOT NULL,
+    is_read INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL
+);
+
+selectSecondaryStats:
+SELECT * FROM local_secondary_stat WHERE submission_id = :submission_id;
+
+upsertSecondaryStat:
+INSERT OR REPLACE INTO local_secondary_stat(id, submission_id, section_name, option_name, class_name, boys_count, girls_count, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteSecondaryStats:
+DELETE FROM local_secondary_stat WHERE submission_id = :submission_id;
+
+selectTeacherStats:
+SELECT * FROM local_teacher_stat WHERE submission_id = :submission_id;
+
+upsertTeacherStat:
+INSERT OR REPLACE INTO local_teacher_stat(id, submission_id, education_level, branch, men_count, women_count, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+deleteTeacherStats:
+DELETE FROM local_teacher_stat WHERE submission_id = :submission_id;
+
+selectEnrollmentStats:
+SELECT * FROM local_enrollment_stat WHERE submission_id = :submission_id;
+
+upsertEnrollmentStat:
+INSERT OR REPLACE INTO local_enrollment_stat(id, submission_id, class_name, boys_count, girls_count, is_beginning, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+deleteEnrollmentStats:
+DELETE FROM local_enrollment_stat WHERE submission_id = :submission_id;
+
+selectCertificationResults:
+SELECT * FROM local_certification_result WHERE submission_id = :submission_id;
+
+upsertCertificationResult:
+INSERT OR REPLACE INTO local_certification_result(
+    id, submission_id, exam_name, class_name, registered_count, participants_count,
+    successes_count, boys_succeeded, girls_succeeded, updated_at
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteCertificationResults:
+DELETE FROM local_certification_result WHERE submission_id = :submission_id;
+
+selectNotifications:
+SELECT * FROM local_notification WHERE user_id = :user_id ORDER BY created_at DESC;
+
+insertNotification:
+INSERT OR REPLACE INTO local_notification(id, user_id, title, message, type, is_read, created_at)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+markNotificationRead:
+UPDATE local_notification SET is_read = 1 WHERE id = :id;
