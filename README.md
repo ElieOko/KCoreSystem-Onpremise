@@ -54,17 +54,36 @@ cp local.properties.example local.properties
 ./gradlew :desktopApp:run
 ```
 
+### Mode démo (sans Supabase)
+
+Connectez-vous avec `demo@local` / `demo` — des données de démonstration sont chargées automatiquement.
+
 ### Tests
 
 ```bash
 ./gradlew :shared:jvmTest
 ```
 
+## Modules livrés (Phase 1 Desktop)
+
+| Module | Description |
+|--------|-------------|
+| Authentification | Supabase + mode démo |
+| Dashboard | 10 cartes KPI + analyses |
+| Écoles | CRUD, recherche, sync offline |
+| Statistiques | Primaire, secondaire, enseignants, inscriptions, certificatives |
+| Déclarations | Liste filtrable par statut |
+| Validation | Valider, rejeter, demander correction |
+| Centralisation | Agrégation complète sous-division |
+| Rapports | Export Excel et PDF |
+| Utilisateurs | Gestion des comptes |
+| Paramètres | Thème clair/sombre |
+
 ## État du projet
 
-**Phase actuelle** : Architecture et conception (Étape 0 ✅)
+**Phase 1 Desktop — fonctionnelle** (étapes 0 à 15 complétées)
 
-**Prochaine étape** : Configuration projet KMP + dépendances (Étape 1)
+**Phase 2** : Version Android (réutilisation du code `commonMain`)
 
 ## Rôles utilisateurs
 
