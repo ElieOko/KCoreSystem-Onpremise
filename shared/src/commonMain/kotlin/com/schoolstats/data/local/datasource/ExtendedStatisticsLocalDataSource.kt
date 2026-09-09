@@ -3,6 +3,9 @@ package com.schoolstats.data.local.datasource
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.schoolstats.data.local.database.SchoolStatsDatabase
+import com.schoolstats.domain.model.AdminStaffFunction
+import com.schoolstats.domain.model.AdminStaffStat
+import com.schoolstats.domain.model.AgeSexStat
 import com.schoolstats.domain.model.AppNotification
 import com.schoolstats.domain.model.CertificationResult
 import com.schoolstats.domain.model.EducationLevel
@@ -11,6 +14,7 @@ import com.schoolstats.domain.model.NotificationType
 import com.schoolstats.domain.model.SecondaryStudentStat
 import com.schoolstats.domain.model.TeacherBranch
 import com.schoolstats.domain.model.TeacherStatDetail
+import com.schoolstats.domain.model.WorkerStat
 import com.schoolstats.util.currentTimeMillis
 import com.schoolstats.util.randomUuid
 import kotlinx.coroutines.Dispatchers
@@ -83,6 +87,47 @@ class ExtendedStatisticsLocalDataSource(
             }
         }
 
+    fun observeAgeSex(submissionId: String): Flow<List<AgeSexStat>> =
+        queries.selectAgeSexStats(submissionId).asFlow().mapToList(Dispatchers.IO).map { rows ->
+            rows.map {
+                AgeSexStat(
+                    id = it.id,
+                    submissionId = it.submission_id,
+                    className = it.class_name,
+                    age = it.age.toInt(),
+                    boysCount = it.boys_count.toInt(),
+                    girlsCount = it.girls_count.toInt(),
+                )
+            }
+        }
+
+    fun observeWorkers(submissionId: String): Flow<List<WorkerStat>> =
+        queries.selectWorkerStats(submissionId).asFlow().mapToList(Dispatchers.IO).map { rows ->
+            rows.map {
+                WorkerStat(
+                    id = it.id,
+                    submissionId = it.submission_id,
+                    educationLevel = EducationLevel.valueOf(it.education_level),
+                    menCount = it.men_count.toInt(),
+                    womenCount = it.women_count.toInt(),
+                )
+            }
+        }
+
+    fun observeAdminStaff(submissionId: String): Flow<List<AdminStaffStat>> =
+        queries.selectAdminStaffStats(submissionId).asFlow().mapToList(Dispatchers.IO).map { rows ->
+            rows.map {
+                AdminStaffStat(
+                    id = it.id,
+                    submissionId = it.submission_id,
+                    function = AdminStaffFunction.valueOf(it.function_name),
+                    educationLevel = EducationLevel.valueOf(it.education_level),
+                    menCount = it.men_count.toInt(),
+                    womenCount = it.women_count.toInt(),
+                )
+            }
+        }
+
     suspend fun saveSecondary(submissionId: String, stats: List<SecondaryStudentStat>) = withContext(Dispatchers.IO) {
         queries.deleteSecondaryStats(submissionId)
         stats.forEach { s ->
@@ -142,6 +187,50 @@ class ExtendedStatisticsLocalDataSource(
                 successes_count = r.successesCount.toLong(),
                 boys_succeeded = r.boysSucceeded.toLong(),
                 girls_succeeded = r.girlsSucceeded.toLong(),
+                updated_at = currentTimeMillis(),
+            )
+        }
+    }
+
+    suspend fun saveAgeSex(submissionId: String, stats: List<AgeSexStat>) = withContext(Dispatchers.IO) {
+        queries.deleteAgeSexStats(submissionId)
+        stats.forEach { s ->
+            queries.upsertAgeSexStat(
+                id = s.id.ifBlank { randomUuid() },
+                submission_id = submissionId,
+                class_name = s.className,
+                age = s.age.toLong(),
+                boys_count = s.boysCount.toLong(),
+                girls_count = s.girlsCount.toLong(),
+                updated_at = currentTimeMillis(),
+            )
+        }
+    }
+
+    suspend fun saveWorkers(submissionId: String, stats: List<WorkerStat>) = withContext(Dispatchers.IO) {
+        queries.deleteWorkerStats(submissionId)
+        stats.forEach { s ->
+            queries.upsertWorkerStat(
+                id = s.id.ifBlank { randomUuid() },
+                submission_id = submissionId,
+                education_level = s.educationLevel.name,
+                men_count = s.menCount.toLong(),
+                women_count = s.womenCount.toLong(),
+                updated_at = currentTimeMillis(),
+            )
+        }
+    }
+
+    suspend fun saveAdminStaff(submissionId: String, stats: List<AdminStaffStat>) = withContext(Dispatchers.IO) {
+        queries.deleteAdminStaffStats(submissionId)
+        stats.forEach { s ->
+            queries.upsertAdminStaffStat(
+                id = s.id.ifBlank { randomUuid() },
+                submission_id = submissionId,
+                function_name = s.function.name,
+                education_level = s.educationLevel.name,
+                men_count = s.menCount.toLong(),
+                women_count = s.womenCount.toLong(),
                 updated_at = currentTimeMillis(),
             )
         }

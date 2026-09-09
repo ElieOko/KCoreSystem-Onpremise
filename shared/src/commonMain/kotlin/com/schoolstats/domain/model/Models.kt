@@ -44,12 +44,69 @@ enum class EducationLevel {
     D4, D6, GRADUE, LICENCE, MASTER, DOCTORAT, AUTRES,
 }
 
+fun EducationLevel.labelFr(): String = when (this) {
+    EducationLevel.D4 -> "D4"
+    EducationLevel.D6 -> "D6"
+    EducationLevel.GRADUE -> "Gradué"
+    EducationLevel.LICENCE -> "Licence"
+    EducationLevel.MASTER -> "Master"
+    EducationLevel.DOCTORAT -> "Doctorat"
+    EducationLevel.AUTRES -> "Autres"
+}
+
 enum class TeacherBranch {
     PRIMAIRE,
     SECONDAIRE_GENERAL,
     SECONDAIRE_TECHNIQUE,
     SECONDAIRE_PROFESSIONNEL,
     AUTRES,
+}
+
+fun TeacherBranch.labelFr(): String = when (this) {
+    TeacherBranch.PRIMAIRE -> "Primaire"
+    TeacherBranch.SECONDAIRE_GENERAL -> "Secondaire général"
+    TeacherBranch.SECONDAIRE_TECHNIQUE -> "Secondaire technique"
+    TeacherBranch.SECONDAIRE_PROFESSIONNEL -> "Secondaire professionnel"
+    TeacherBranch.AUTRES -> "Autres"
+}
+
+enum class AdminStaffFunction {
+    DIRECTEUR,
+    DIRECTEUR_ADJOINT,
+    SURNUMERAIRE,
+    PREFET,
+    SECRETAIRE,
+    DIRECTEUR_DES_ETUDES,
+    CONSEILLER_PEDAGOGIQUE,
+    DIRECTEUR_DE_DISCIPLINE,
+    CONSEILLER_ORIENTATION,
+}
+
+fun AdminStaffFunction.labelFr(): String = when (this) {
+    AdminStaffFunction.DIRECTEUR -> "Directeur"
+    AdminStaffFunction.DIRECTEUR_ADJOINT -> "Directeur adjoint"
+    AdminStaffFunction.SURNUMERAIRE -> "Surnuméraire"
+    AdminStaffFunction.PREFET -> "Préfet"
+    AdminStaffFunction.SECRETAIRE -> "Secrétaire"
+    AdminStaffFunction.DIRECTEUR_DES_ETUDES -> "Directeur des études"
+    AdminStaffFunction.CONSEILLER_PEDAGOGIQUE -> "Conseiller pédagogique"
+    AdminStaffFunction.DIRECTEUR_DE_DISCIPLINE -> "Directeur de discipline"
+    AdminStaffFunction.CONSEILLER_ORIENTATION -> "Conseiller d'orientation"
+}
+
+fun AdminStaffFunction.isSecondarySpecific(): Boolean = this in setOf(
+    AdminStaffFunction.PREFET,
+    AdminStaffFunction.SECRETAIRE,
+    AdminStaffFunction.DIRECTEUR_DES_ETUDES,
+    AdminStaffFunction.CONSEILLER_PEDAGOGIQUE,
+    AdminStaffFunction.DIRECTEUR_DE_DISCIPLINE,
+    AdminStaffFunction.CONSEILLER_ORIENTATION,
+)
+
+object StudentAges {
+    val values: List<Int> = (6..18).toList() + 19
+    const val PLUS_AGE = 19
+    fun label(age: Int): String = if (age >= PLUS_AGE) "19+" else age.toString()
 }
 
 enum class NotificationType {
@@ -149,6 +206,39 @@ data class TeacherStatDetail(
     val totalCount: Int get() = menCount + womenCount
 }
 
+data class AgeSexStat(
+    val id: String = "",
+    val submissionId: String = "",
+    val className: String,
+    val age: Int,
+    val boysCount: Int,
+    val girlsCount: Int,
+) {
+    val totalCount: Int get() = boysCount + girlsCount
+    val ageLabel: String get() = StudentAges.label(age)
+}
+
+data class WorkerStat(
+    val id: String = "",
+    val submissionId: String = "",
+    val educationLevel: EducationLevel,
+    val menCount: Int,
+    val womenCount: Int,
+) {
+    val totalCount: Int get() = menCount + womenCount
+}
+
+data class AdminStaffStat(
+    val id: String = "",
+    val submissionId: String = "",
+    val function: AdminStaffFunction,
+    val educationLevel: EducationLevel,
+    val menCount: Int,
+    val womenCount: Int,
+) {
+    val totalCount: Int get() = menCount + womenCount
+}
+
 data class EnrollmentStat(
     val id: String = "",
     val submissionId: String = "",
@@ -197,6 +287,13 @@ data class DashboardStats(
     val totalTeachers: Int = 0,
     val totalBoys: Int = 0,
     val totalGirls: Int = 0,
+    val teacherMen: Int = 0,
+    val teacherWomen: Int = 0,
+    val totalWorkers: Int = 0,
+    val workerMen: Int = 0,
+    val workerWomen: Int = 0,
+    val totalAdminStaff: Int = 0,
+    val census: CentralizationStats = CentralizationStats(),
 )
 
 data class CentralizationStats(
@@ -204,11 +301,23 @@ data class CentralizationStats(
     val totalGirls: Int = 0,
     val totalStudents: Int = 0,
     val totalTeachers: Int = 0,
+    val totalTeacherMen: Int = 0,
+    val totalTeacherWomen: Int = 0,
+    val totalWorkers: Int = 0,
+    val totalWorkerMen: Int = 0,
+    val totalWorkerWomen: Int = 0,
+    val totalAdminStaff: Int = 0,
+    val totalAdminMen: Int = 0,
+    val totalAdminWomen: Int = 0,
+    val contributingSchools: Int = 0,
     val byClass: List<PrimaryClassStat> = emptyList(),
     val bySection: List<SecondaryStudentStat> = emptyList(),
     val teachers: List<TeacherStatDetail> = emptyList(),
     val enrollments: List<EnrollmentComparison> = emptyList(),
     val certifications: List<CertificationResult> = emptyList(),
+    val byAge: List<AgeSexStat> = emptyList(),
+    val workers: List<WorkerStat> = emptyList(),
+    val adminStaff: List<AdminStaffStat> = emptyList(),
 )
 
 data class AppNotification(

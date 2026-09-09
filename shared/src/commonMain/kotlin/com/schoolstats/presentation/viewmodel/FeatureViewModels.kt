@@ -3,15 +3,18 @@ package com.schoolstats.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.schoolstats.data.demo.DemoDataSeeder
+import com.schoolstats.domain.census.CensusDefaults
+import com.schoolstats.domain.model.AdminStaffStat
+import com.schoolstats.domain.model.AgeSexStat
 import com.schoolstats.domain.model.CertificationResult
+import com.schoolstats.domain.model.EducationLevel
 import com.schoolstats.domain.model.EnrollmentStat
 import com.schoolstats.domain.model.PrimaryClassStat
 import com.schoolstats.domain.model.SecondaryStudentStat
 import com.schoolstats.domain.model.Submission
 import com.schoolstats.domain.model.SubmissionStatus
-import com.schoolstats.domain.model.TeacherBranch
 import com.schoolstats.domain.model.TeacherStatDetail
-import com.schoolstats.domain.model.EducationLevel
+import com.schoolstats.domain.model.WorkerStat
 import com.schoolstats.domain.repository.StatisticsRepository
 import com.schoolstats.domain.repository.SubmissionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,35 +56,16 @@ data class StatisticsUiState(
     val submissionId: String = DemoDataSeeder.DEMO_SUBMISSION_ID,
     val schoolId: String = "sch-1",
     val tab: Int = 0,
-    val primary: List<PrimaryClassStat> = defaultPrimary(),
-    val secondary: List<SecondaryStudentStat> = defaultSecondary(),
-    val teachers: List<TeacherStatDetail> = defaultTeachers(),
-    val enrollments: List<EnrollmentStat> = defaultEnrollments(),
+    val primary: List<PrimaryClassStat> = CensusDefaults.emptyPrimary(),
+    val secondary: List<SecondaryStudentStat> = CensusDefaults.emptySecondary(),
+    val teachers: List<TeacherStatDetail> = CensusDefaults.emptyTeachers(),
+    val enrollments: List<EnrollmentStat> = CensusDefaults.emptyEnrollments(),
     val certifications: List<CertificationResult> = defaultCerts(),
+    val ageSex: List<AgeSexStat> = CensusDefaults.emptyAgeSex(),
+    val workers: List<WorkerStat> = CensusDefaults.emptyWorkers(),
+    val adminStaff: List<AdminStaffStat> = CensusDefaults.emptyAdminStaff(),
     val message: String? = null,
     val error: String? = null,
-)
-
-private fun defaultPrimary() = listOf(
-    PrimaryClassStat(className = "1ère année", classOrder = 1, boysCount = 0, girlsCount = 0),
-    PrimaryClassStat(className = "2ème année", classOrder = 2, boysCount = 0, girlsCount = 0),
-    PrimaryClassStat(className = "3ème année", classOrder = 3, boysCount = 0, girlsCount = 0),
-    PrimaryClassStat(className = "4ème année", classOrder = 4, boysCount = 0, girlsCount = 0),
-    PrimaryClassStat(className = "5ème année", classOrder = 5, boysCount = 0, girlsCount = 0),
-    PrimaryClassStat(className = "6ème année", classOrder = 6, boysCount = 0, girlsCount = 0),
-)
-
-private fun defaultSecondary() = listOf(
-    SecondaryStudentStat(sectionName = "Enseignement Général", optionName = "Latin-Philo", className = "3ème", boysCount = 0, girlsCount = 0),
-)
-
-private fun defaultTeachers() = listOf(
-    TeacherStatDetail(educationLevel = EducationLevel.GRADUE, branch = TeacherBranch.PRIMAIRE, menCount = 0, womenCount = 0),
-)
-
-private fun defaultEnrollments() = listOf(
-    EnrollmentStat(className = "1ère année", boysCount = 0, girlsCount = 0, isBeginning = true),
-    EnrollmentStat(className = "1ère année", boysCount = 0, girlsCount = 0, isBeginning = false),
 )
 
 private fun defaultCerts() = listOf(
@@ -107,13 +91,22 @@ class StatisticsViewModel(
             statisticsRepository.observeSecondaryStats(submissionId).collect { if (it.isNotEmpty()) _uiState.update { s -> s.copy(secondary = it) } }
         }
         viewModelScope.launch {
-            statisticsRepository.observeTeacherStats(submissionId).collect { if (it.isNotEmpty()) _uiState.update { s -> s.copy(teachers = it) } }
+            statisticsRepository.observeTeacherStats(submissionId).collect { if (it.isNotEmpty()) _uiState.update { s -> s.copy(teachers = mergeTeachers(it)) } }
         }
         viewModelScope.launch {
             statisticsRepository.observeEnrollments(submissionId).collect { if (it.isNotEmpty()) _uiState.update { s -> s.copy(enrollments = it) } }
         }
         viewModelScope.launch {
             statisticsRepository.observeCertifications(submissionId).collect { if (it.isNotEmpty()) _uiState.update { s -> s.copy(certifications = it) } }
+        }
+        viewModelScope.launch {
+            statisticsRepository.observeAgeSexStats(submissionId).collect { if (it.isNotEmpty()) _uiState.update { s -> s.copy(ageSex = it) } }
+        }
+        viewModelScope.launch {
+            statisticsRepository.observeWorkerStats(submissionId).collect { if (it.isNotEmpty()) _uiState.update { s -> s.copy(workers = mergeWorkers(it)) } }
+        }
+        viewModelScope.launch {
+            statisticsRepository.observeAdminStaffStats(submissionId).collect { if (it.isNotEmpty()) _uiState.update { s -> s.copy(adminStaff = mergeAdmin(it)) } }
         }
         _uiState.update { it.copy(submissionId = submissionId) }
     }
@@ -127,6 +120,62 @@ class StatisticsViewModel(
         state.copy(primary = list, message = null)
     }
 
+    fun updateSecondary(index: Int, boys: Int? = null, girls: Int? = null) = _uiState.update { state ->
+        val list = state.secondary.toMutableList()
+        val c = list[index]
+        list[index] = c.copy(boysCount = boys ?: c.boysCount, girlsCount = girls ?: c.girlsCount)
+        state.copy(secondary = list, message = null)
+    }
+
+    fun updateTeacher(index: Int, men: Int? = null, women: Int? = null) = _uiState.update { state ->
+        val list = state.teachers.toMutableList()
+        val c = list[index]
+        list[index] = c.copy(menCount = men ?: c.menCount, womenCount = women ?: c.womenCount)
+        state.copy(teachers = list, message = null)
+    }
+
+    fun updateWorker(index: Int, men: Int? = null, women: Int? = null) = _uiState.update { state ->
+        val list = state.workers.toMutableList()
+        val c = list[index]
+        list[index] = c.copy(menCount = men ?: c.menCount, womenCount = women ?: c.womenCount)
+        state.copy(workers = list, message = null)
+    }
+
+    fun updateAdmin(index: Int, men: Int? = null, women: Int? = null, level: EducationLevel? = null) = _uiState.update { state ->
+        val list = state.adminStaff.toMutableList()
+        val c = list[index]
+        list[index] = c.copy(
+            menCount = men ?: c.menCount,
+            womenCount = women ?: c.womenCount,
+            educationLevel = level ?: c.educationLevel,
+        )
+        state.copy(adminStaff = list, message = null)
+    }
+
+    fun updateAgeSex(className: String, age: Int, boys: Int? = null, girls: Int? = null) = _uiState.update { state ->
+        val list = state.ageSex.toMutableList()
+        val index = list.indexOfFirst { it.className == className && it.age == age }
+        if (index >= 0) {
+            val current = list[index]
+            list[index] = current.copy(boysCount = boys ?: current.boysCount, girlsCount = girls ?: current.girlsCount)
+        } else {
+            list += AgeSexStat(
+                className = className,
+                age = age,
+                boysCount = boys ?: 0,
+                girlsCount = girls ?: 0,
+            )
+        }
+        state.copy(ageSex = list, message = null)
+    }
+
+    fun updateEnrollment(index: Int, boys: Int? = null, girls: Int? = null) = _uiState.update { state ->
+        val list = state.enrollments.toMutableList()
+        val c = list[index]
+        list[index] = c.copy(boysCount = boys ?: c.boysCount, girlsCount = girls ?: c.girlsCount)
+        state.copy(enrollments = list, message = null)
+    }
+
     fun saveAll() {
         val state = _uiState.value
         viewModelScope.launch {
@@ -136,6 +185,9 @@ class StatisticsViewModel(
                 statisticsRepository.saveTeacherStats(state.submissionId, state.teachers).getOrThrow()
                 statisticsRepository.saveEnrollments(state.submissionId, state.enrollments).getOrThrow()
                 statisticsRepository.saveCertifications(state.submissionId, state.certifications).getOrThrow()
+                statisticsRepository.saveAgeSexStats(state.submissionId, state.ageSex).getOrThrow()
+                statisticsRepository.saveWorkerStats(state.submissionId, state.workers).getOrThrow()
+                statisticsRepository.saveAdminStaffStats(state.submissionId, state.adminStaff).getOrThrow()
             }.onSuccess {
                 _uiState.update { it.copy(message = "Statistiques enregistrées.", error = null) }
             }.onFailure { e ->
@@ -147,12 +199,36 @@ class StatisticsViewModel(
     fun submit() {
         viewModelScope.launch {
             submissionRepository.submitDeclaration(_uiState.value.submissionId)
-                .onSuccess { _uiState.update { it.copy(message = "Déclaration soumise.") } }
+                .onSuccess { _uiState.update { it.copy(message = "Déclaration soumise à la sous-division.") } }
                 .onFailure { e -> _uiState.update { it.copy(error = e.message) } }
         }
     }
 
     val enrollmentComparison get() = statisticsRepository.compareEnrollments(_uiState.value.enrollments)
+
+    private fun mergeTeachers(saved: List<TeacherStatDetail>): List<TeacherStatDetail> {
+        val defaults = CensusDefaults.emptyTeachers()
+        if (saved.isEmpty()) return defaults
+        val byKey = saved.associateBy { it.educationLevel to it.branch }
+        val merged = defaults.map { row -> byKey[row.educationLevel to row.branch] ?: row }
+        val extras = saved.filter { savedRow ->
+            defaults.none { it.educationLevel == savedRow.educationLevel && it.branch == savedRow.branch }
+        }
+        return merged + extras
+    }
+
+    private fun mergeWorkers(saved: List<WorkerStat>): List<WorkerStat> {
+        val defaults = CensusDefaults.emptyWorkers()
+        val byLevel = saved.associateBy { it.educationLevel }
+        return defaults.map { row -> byLevel[row.educationLevel] ?: row }
+    }
+
+    private fun mergeAdmin(saved: List<AdminStaffStat>): List<AdminStaffStat> {
+        val defaults = CensusDefaults.emptyAdminStaff()
+        if (saved.isEmpty()) return defaults
+        val byFunction = saved.associateBy { it.function }
+        return defaults.map { row -> byFunction[row.function] ?: row }
+    }
 }
 
 data class ValidationUiState(
@@ -198,10 +274,13 @@ class ValidationViewModel(
 data class CentralizationUiState(
     val stats: com.schoolstats.domain.model.CentralizationStats = com.schoolstats.domain.model.CentralizationStats(),
     val schoolYear: String = DemoDataSeeder.DEMO_YEAR,
+    val subdivisionName: String = "Limete",
+    val submissions: List<Submission> = emptyList(),
 )
 
 class CentralizationViewModel(
     private val centralizationRepository: com.schoolstats.domain.repository.CentralizationRepository,
+    private val submissionRepository: SubmissionRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CentralizationUiState())
     val uiState: StateFlow<CentralizationUiState> = _uiState.asStateFlow()
@@ -210,6 +289,11 @@ class CentralizationViewModel(
         viewModelScope.launch {
             centralizationRepository.observeCentralization(emptyList()).collect { stats ->
                 _uiState.update { it.copy(stats = stats) }
+            }
+        }
+        viewModelScope.launch {
+            submissionRepository.observeSubmissions(null).collect { submissions ->
+                _uiState.update { it.copy(submissions = submissions) }
             }
         }
     }

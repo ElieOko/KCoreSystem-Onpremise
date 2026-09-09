@@ -29,9 +29,25 @@ class JvmExportService : ExportService {
             row(listOf("Total filles", report.stats.totalGirls.toString()))
             row(listOf("Total élèves", report.stats.totalStudents.toString()))
             row(listOf("Total enseignants", report.stats.totalTeachers.toString()))
+            row(listOf("Enseignants H/F", report.stats.totalTeacherMen.toString(), report.stats.totalTeacherWomen.toString()))
+            row(listOf("Total ouvriers", report.stats.totalWorkers.toString()))
+            row(listOf("Ouvriers H/F", report.stats.totalWorkerMen.toString(), report.stats.totalWorkerWomen.toString()))
+            row(listOf("Personnel administratif", report.stats.totalAdminStaff.toString()))
             row(emptyList())
             row(listOf("Classe", "Garçons", "Filles", "Total"))
             report.stats.byClass.forEach { row(listOf(it.className, it.boysCount.toString(), it.girlsCount.toString(), it.totalCount.toString())) }
+            row(emptyList())
+            row(listOf("Personnel administratif"))
+            row(listOf("Fonction", "Niveau", "Hommes", "Femmes", "Total"))
+            report.stats.adminStaff.forEach {
+                row(listOf(it.function.name, it.educationLevel.name, it.menCount.toString(), it.womenCount.toString(), it.totalCount.toString()))
+            }
+            row(emptyList())
+            row(listOf("Ouvriers"))
+            row(listOf("Niveau", "Hommes", "Femmes", "Total"))
+            report.stats.workers.forEach {
+                row(listOf(it.educationLevel.name, it.menCount.toString(), it.womenCount.toString(), it.totalCount.toString()))
+            }
             row(emptyList())
             row(listOf("Section", "Option", "Classe", "Garçons", "Filles", "Total"))
             report.stats.bySection.forEach {
@@ -62,7 +78,9 @@ class JvmExportService : ExportService {
             report.subdivisionName?.let { document.add(Paragraph("Sous-Division: $it", bodyFont)) }
             document.add(Paragraph(" "))
             document.add(Paragraph("Total élèves: ${report.stats.totalStudents} (G: ${report.stats.totalBoys} / F: ${report.stats.totalGirls})", bodyFont))
-            document.add(Paragraph("Total enseignants: ${report.stats.totalTeachers}", bodyFont))
+            document.add(Paragraph("Total enseignants: ${report.stats.totalTeachers} (H ${report.stats.totalTeacherMen} / F ${report.stats.totalTeacherWomen})", bodyFont))
+            document.add(Paragraph("Total ouvriers: ${report.stats.totalWorkers} (H ${report.stats.totalWorkerMen} / F ${report.stats.totalWorkerWomen})", bodyFont))
+            document.add(Paragraph("Personnel administratif: ${report.stats.totalAdminStaff}", bodyFont))
             document.add(Paragraph(" "))
             document.add(Paragraph("Effectifs par classe", titleFont))
             report.stats.byClass.forEach {

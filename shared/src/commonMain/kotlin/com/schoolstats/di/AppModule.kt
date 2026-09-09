@@ -83,7 +83,7 @@ val dataModule = module {
     single<SchoolYearRepository> { SchoolYearRepositoryImpl(get()) }
     single<SubmissionRepository> { SubmissionRepositoryImpl(get(), get(), get(), get()) }
     single<StatisticsRepository> { StatisticsRepositoryImpl(get(), get(), get()) }
-    single<DashboardRepository> { DashboardRepositoryImpl(get(), get(), get(), get(), get(), get()) }
+    single<DashboardRepository> { DashboardRepositoryImpl(get(), get(), get()) }
     single<CentralizationRepository> { CentralizationRepositoryImpl(get(), get(), get()) }
     single<NotificationRepository> { NotificationRepositoryImpl(get()) }
     single<UserManagementRepository> { UserManagementRepositoryImpl() }
@@ -106,7 +106,7 @@ val viewModelModule = module {
     viewModel { SubmissionsViewModel(get()) }
     viewModel { StatisticsViewModel(get(), get()) }
     viewModel { ValidationViewModel(get()) }
-    viewModel { CentralizationViewModel(get()) }
+    viewModel { CentralizationViewModel(get(), get()) }
     viewModel { ReportsViewModel(get(), get()) }
     viewModel { UsersViewModel(get()) }
     viewModel { SettingsViewModel() }
