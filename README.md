@@ -1,6 +1,6 @@
 # KCoreSystem — Statistiques Scolaires
 
-Application professionnelle de **collecte, gestion, validation et centralisation des statistiques scolaires**, développée en **Kotlin Multiplatform** avec approche **Desktop First**.
+Application professionnelle de **collecte, gestion, validation et centralisation des statistiques scolaires**, développée en **Kotlin Multiplatform** (Desktop + Android).
 
 ## Stack technique
 
@@ -8,6 +8,7 @@ Application professionnelle de **collecte, gestion, validation et centralisation
 |-----------|-------------|
 | UI | Compose Multiplatform + Material 3 |
 | Desktop | JVM (Windows, macOS, Linux) |
+| Android | Application native (minSdk 26) |
 | Backend | Supabase (PostgreSQL, Auth, Realtime, Storage) |
 | Base locale | SQLDelight (offline first) |
 | Architecture | Clean Architecture + MVVM |
@@ -17,7 +18,8 @@ Application professionnelle de **collecte, gestion, validation et centralisation
 
 ```
 KCoreSystem/
-├── desktopApp/          # Application Desktop (Phase 1)
+├── androidApp/          # Application Android
+├── desktopApp/          # Application Desktop
 ├── shared/              # Code KMP partagé (domain, data, presentation)
 ├── supabase/            # Migrations PostgreSQL, RLS, vues agrégées
 └── docs/                # Documentation architecture
@@ -38,7 +40,8 @@ KCoreSystem/
 
 ### Prérequis
 
-- JDK 17+
+- JDK 17+ (JDK 21 recommandé)
+- Android SDK (compileSdk 36) pour l’application mobile
 - Projet Supabase configuré (voir [supabase/README.md](supabase/README.md))
 
 ### Configuration
@@ -54,6 +57,19 @@ cp local.properties.example local.properties
 ./gradlew :desktopApp:run
 ```
 
+### Lancer / packager l'application Android
+
+Installer le SDK Android, puis renseigner `sdk.dir` dans `local.properties` (voir `local.properties.example`).
+
+```bash
+# APK debug
+./gradlew :androidApp:assembleDebug
+```
+
+APK généré : `androidApp/build/outputs/apk/debug/androidApp-debug.apk`
+
+Depuis Android Studio : ouvrir le projet, sélectionner la configuration `androidApp`, lancer sur un émulateur ou un appareil (API 26+).
+
 ### Mode démo (sans Supabase)
 
 Connectez-vous avec `demo@local` / `demo` — des données de démonstration sont chargées automatiquement.
@@ -64,26 +80,42 @@ Connectez-vous avec `demo@local` / `demo` — des données de démonstration son
 ./gradlew :shared:jvmTest
 ```
 
-## Modules livrés (Phase 1 Desktop)
+## Modules livrés
 
 | Module | Description |
 |--------|-------------|
-| Authentification | Supabase + mode démo |
-| Dashboard | 10 cartes KPI + analyses |
+| Authentification | Supabase + mode démo (Desktop et Android) |
+| Dashboard | Cartes KPI + analyses |
 | Écoles | CRUD, recherche, sync offline |
-| Statistiques | Primaire, secondaire, enseignants, inscriptions, certificatives |
+| Statistiques | Effectifs, âge/sexe, enseignants, administratif, ouvriers, inscriptions, certificatives |
 | Déclarations | Liste filtrable par statut |
 | Validation | Valider, rejeter, demander correction |
-| Centralisation | Agrégation complète sous-division |
-| Rapports | Export Excel et PDF |
+| Centralisation | Fichier central agrégé sous-division |
+| Rapports | Export Excel/PDF (Desktop) ou CSV/texte (Android) |
 | Utilisateurs | Gestion des comptes |
 | Paramètres | Thème clair/sombre |
 
 ## État du projet
 
-**Phase 1 Desktop — fonctionnelle** (étapes 0 à 15 complétées)
+**Desktop** — fonctionnel (saisie, validation, fichier central, packaging `.exe` Windows)
 
-**Phase 2** : Version Android (réutilisation du code `commonMain`)
+**Android** — application Compose (navigation bas de page : Accueil, Saisie, Fichier central, Plus)
+
+### Packaging Windows (`.exe`)
+
+Sur une machine Windows avec JDK 21 :
+
+```bat
+gradlew.bat :desktopApp:createDistributable
+```
+
+Exécutable : `desktopApp\build\compose\binaries\main\app\KCoreSystem\KCoreSystem.exe`
+
+Installer WiX :
+
+```bat
+gradlew.bat :desktopApp:packageExe
+```
 
 ## Rôles utilisateurs
 
