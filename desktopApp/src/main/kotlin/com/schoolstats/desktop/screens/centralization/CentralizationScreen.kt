@@ -107,14 +107,17 @@ fun CentralizationScreen(viewModel: CentralizationViewModel = koinViewModel()) {
         )
 
         SectionCard("Écoles contributrices") {
-            if (state.submissions.isEmpty()) {
-                Text("Aucune déclaration.")
+            val contributing = state.submissions.filter {
+                it.status in setOf(SubmissionStatus.SOUMIS, SubmissionStatus.EN_VERIFICATION, SubmissionStatus.VALIDE)
+            }
+            if (contributing.isEmpty()) {
+                Text("Aucune déclaration agrégée.")
             } else {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     AssistChip(onClick = {}, label = { Text("${stats.contributingSchools} dossiers agrégés") })
-                    AssistChip(onClick = {}, label = { Text("${state.submissions.count { it.status == SubmissionStatus.VALIDE }} validés") })
+                    AssistChip(onClick = {}, label = { Text("${contributing.count { it.status == SubmissionStatus.VALIDE }} validés") })
                 }
-                state.submissions.forEach { submission ->
+                contributing.forEach { submission ->
                     Text(
                         "${submission.schoolName ?: submission.schoolId} — ${submission.status.name}",
                         style = MaterialTheme.typography.bodyMedium,
