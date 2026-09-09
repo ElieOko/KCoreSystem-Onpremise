@@ -44,9 +44,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.schoolstats.data.sync.SyncState
-import com.schoolstats.desktop.navigation.AppRoute
 import com.schoolstats.domain.model.UserProfile
 import com.schoolstats.domain.model.UserRole
+import com.schoolstats.presentation.navigation.AppRoute
 
 @Composable
 fun MainLayout(
