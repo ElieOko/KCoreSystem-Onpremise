@@ -7,7 +7,6 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.storage.Storage
-import io.ktor.client.engine.cio.CIO
 
 class SupabaseClientProvider {
   private var client: SupabaseClient? = null
@@ -22,7 +21,7 @@ class SupabaseClientProvider {
       install(Postgrest)
       install(Realtime)
       install(Storage)
-      httpEngine = CIO.create()
+      httpEngine = createHttpEngine()
     }.also { client = it }
   }
 

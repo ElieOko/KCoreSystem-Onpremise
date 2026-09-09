@@ -4,3 +4,6 @@
 
 supabase.url=https://your-project.supabase.co
 supabase.anon.key=your-anon-key-here
+
+# Android SDK (obligatoire pour compiler :androidApp)
+# sdk.dir=/chemin/vers/Android/Sdk
