@@ -38,9 +38,18 @@ compose.desktop {
         mainClass = "com.schoolstats.desktop.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Msi, TargetFormat.Dmg, TargetFormat.Deb)
-            packageName = "com.schoolstats"
+            targetFormats(TargetFormat.Exe, TargetFormat.Msi, TargetFormat.Dmg, TargetFormat.Deb)
+            packageName = "KCoreSystem"
             packageVersion = "1.0.0"
+            description = "Collecte et centralisation des statistiques scolaires"
+            vendor = "KCoreSystem"
+            copyright = "© 2026 KCoreSystem"
+            windows {
+                menuGroup = "KCoreSystem"
+                upgradeUuid = "8b7c1d2e-4a5f-4c6b-9e10-2f3a4b5c6d7e"
+                shortcut = true
+                dirChooser = true
+            }
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.schoolstats.domain.repository
 
+import com.schoolstats.domain.model.AdminStaffStat
+import com.schoolstats.domain.model.AgeSexStat
 import com.schoolstats.domain.model.AppNotification
 import com.schoolstats.domain.model.CentralizationStats
 import com.schoolstats.domain.model.CertificationResult
@@ -16,6 +18,7 @@ import com.schoolstats.domain.model.Submission
 import com.schoolstats.domain.model.SubmissionStatus
 import com.schoolstats.domain.model.TeacherStatDetail
 import com.schoolstats.domain.model.UserProfile
+import com.schoolstats.domain.model.WorkerStat
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -55,11 +58,17 @@ interface StatisticsRepository {
     fun observeTeacherStats(submissionId: String): Flow<List<TeacherStatDetail>>
     fun observeEnrollments(submissionId: String): Flow<List<EnrollmentStat>>
     fun observeCertifications(submissionId: String): Flow<List<CertificationResult>>
+    fun observeAgeSexStats(submissionId: String): Flow<List<AgeSexStat>>
+    fun observeWorkerStats(submissionId: String): Flow<List<WorkerStat>>
+    fun observeAdminStaffStats(submissionId: String): Flow<List<AdminStaffStat>>
     suspend fun savePrimaryStats(submissionId: String, schoolId: String, stats: List<PrimaryClassStat>): Result<Unit>
     suspend fun saveSecondaryStats(submissionId: String, stats: List<SecondaryStudentStat>): Result<Unit>
     suspend fun saveTeacherStats(submissionId: String, stats: List<TeacherStatDetail>): Result<Unit>
     suspend fun saveEnrollments(submissionId: String, stats: List<EnrollmentStat>): Result<Unit>
     suspend fun saveCertifications(submissionId: String, results: List<CertificationResult>): Result<Unit>
+    suspend fun saveAgeSexStats(submissionId: String, stats: List<AgeSexStat>): Result<Unit>
+    suspend fun saveWorkerStats(submissionId: String, stats: List<WorkerStat>): Result<Unit>
+    suspend fun saveAdminStaffStats(submissionId: String, stats: List<AdminStaffStat>): Result<Unit>
     fun compareEnrollments(stats: List<EnrollmentStat>): List<EnrollmentComparison>
 }
 

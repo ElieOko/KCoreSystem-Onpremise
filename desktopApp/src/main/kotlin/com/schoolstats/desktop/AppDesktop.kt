@@ -63,7 +63,7 @@ fun AppDesktop() {
                     AppRoute.Dashboard -> DashboardScreen()
                     AppRoute.Schools -> SchoolsScreen()
                     AppRoute.Statistics -> StatisticsScreen()
-                    AppRoute.Teachers -> StatisticsScreen()
+                    AppRoute.Teachers -> StatisticsScreen(initialTab = 2)
                     AppRoute.Submissions -> SubmissionsScreen()
                     AppRoute.Validation -> ValidationScreen()
                     AppRoute.Centralization -> CentralizationScreen()

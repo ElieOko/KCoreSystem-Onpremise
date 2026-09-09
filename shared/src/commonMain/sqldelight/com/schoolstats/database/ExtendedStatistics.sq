@@ -42,6 +42,35 @@ CREATE TABLE local_certification_result (
     updated_at INTEGER NOT NULL
 );
 
+CREATE TABLE local_age_sex_stat (
+    id TEXT NOT NULL PRIMARY KEY,
+    submission_id TEXT NOT NULL,
+    class_name TEXT NOT NULL,
+    age INTEGER NOT NULL,
+    boys_count INTEGER NOT NULL DEFAULT 0,
+    girls_count INTEGER NOT NULL DEFAULT 0,
+    updated_at INTEGER NOT NULL
+);
+
+CREATE TABLE local_worker_stat (
+    id TEXT NOT NULL PRIMARY KEY,
+    submission_id TEXT NOT NULL,
+    education_level TEXT NOT NULL,
+    men_count INTEGER NOT NULL DEFAULT 0,
+    women_count INTEGER NOT NULL DEFAULT 0,
+    updated_at INTEGER NOT NULL
+);
+
+CREATE TABLE local_admin_staff_stat (
+    id TEXT NOT NULL PRIMARY KEY,
+    submission_id TEXT NOT NULL,
+    function_name TEXT NOT NULL,
+    education_level TEXT NOT NULL,
+    men_count INTEGER NOT NULL DEFAULT 0,
+    women_count INTEGER NOT NULL DEFAULT 0,
+    updated_at INTEGER NOT NULL
+);
+
 CREATE TABLE local_notification (
     id TEXT NOT NULL PRIMARY KEY,
     user_id TEXT NOT NULL,
@@ -93,6 +122,36 @@ INSERT OR REPLACE INTO local_certification_result(
 
 deleteCertificationResults:
 DELETE FROM local_certification_result WHERE submission_id = :submission_id;
+
+selectAgeSexStats:
+SELECT * FROM local_age_sex_stat WHERE submission_id = :submission_id ORDER BY class_name ASC, age ASC;
+
+upsertAgeSexStat:
+INSERT OR REPLACE INTO local_age_sex_stat(id, submission_id, class_name, age, boys_count, girls_count, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+deleteAgeSexStats:
+DELETE FROM local_age_sex_stat WHERE submission_id = :submission_id;
+
+selectWorkerStats:
+SELECT * FROM local_worker_stat WHERE submission_id = :submission_id;
+
+upsertWorkerStat:
+INSERT OR REPLACE INTO local_worker_stat(id, submission_id, education_level, men_count, women_count, updated_at)
+VALUES (?, ?, ?, ?, ?, ?);
+
+deleteWorkerStats:
+DELETE FROM local_worker_stat WHERE submission_id = :submission_id;
+
+selectAdminStaffStats:
+SELECT * FROM local_admin_staff_stat WHERE submission_id = :submission_id;
+
+upsertAdminStaffStat:
+INSERT OR REPLACE INTO local_admin_staff_stat(id, submission_id, function_name, education_level, men_count, women_count, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+deleteAdminStaffStats:
+DELETE FROM local_admin_staff_stat WHERE submission_id = :submission_id;
 
 selectNotifications:
 SELECT * FROM local_notification WHERE user_id = :user_id ORDER BY created_at DESC;
