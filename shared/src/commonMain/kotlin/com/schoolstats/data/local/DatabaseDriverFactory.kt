@@ -53,4 +53,40 @@ fun SqlDriver.ensureCensusTables() {
         """.trimIndent(),
         0,
     )
+    execute(
+        null,
+        """
+        CREATE TABLE IF NOT EXISTS local_student_record (
+            id TEXT NOT NULL PRIMARY KEY,
+            school_id TEXT NOT NULL,
+            school_year_id TEXT NOT NULL,
+            full_name TEXT NOT NULL,
+            gender TEXT NOT NULL,
+            class_name TEXT NOT NULL,
+            age INTEGER NOT NULL,
+            section_name TEXT,
+            option_name TEXT,
+            updated_at INTEGER NOT NULL
+        )
+        """.trimIndent(),
+        0,
+    )
+    execute(
+        null,
+        """
+        CREATE TABLE IF NOT EXISTS local_worker_record (
+            id TEXT NOT NULL PRIMARY KEY,
+            school_id TEXT NOT NULL,
+            school_year_id TEXT NOT NULL,
+            full_name TEXT NOT NULL,
+            gender TEXT NOT NULL,
+            category TEXT NOT NULL,
+            education_level TEXT NOT NULL,
+            teacher_branch TEXT,
+            admin_function TEXT,
+            updated_at INTEGER NOT NULL
+        )
+        """.trimIndent(),
+        0,
+    )
 }

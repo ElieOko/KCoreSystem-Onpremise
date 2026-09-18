@@ -14,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Description
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.Hub
 import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SpaceDashboard
@@ -63,6 +65,7 @@ import com.schoolstats.presentation.screens.auth.LoginScreen
 import com.schoolstats.presentation.screens.centralization.CentralizationScreen
 import com.schoolstats.presentation.screens.dashboard.DashboardScreen
 import com.schoolstats.presentation.screens.reports.ReportsScreen
+import com.schoolstats.presentation.screens.registry.SchoolRegistryScreen
 import com.schoolstats.presentation.screens.schools.SchoolsScreen
 import com.schoolstats.presentation.screens.settings.SettingsScreen
 import com.schoolstats.presentation.screens.statistics.StatisticsScreen
@@ -185,6 +188,7 @@ private fun MobileShell(
         Box(Modifier.fillMaxSize().padding(innerPadding).padding(horizontal = 12.dp, vertical = 8.dp)) {
             when {
                 currentTab == MobileTab.Home -> DashboardScreen(compact = true)
+                currentTab == MobileTab.Census && profile.role == UserRole.ECOLE -> SchoolRegistryScreen(compact = true)
                 currentTab == MobileTab.Census -> StatisticsScreen(compact = true)
                 currentTab == MobileTab.Central -> CentralizationScreen(compact = true)
                 currentTab == MobileTab.More && currentRoute == AppRoute.Dashboard -> {
@@ -204,6 +208,8 @@ private fun RouteContent(route: AppRoute) {
     when (route) {
         AppRoute.Dashboard -> DashboardScreen(compact = true)
         AppRoute.Schools -> SchoolsScreen()
+        AppRoute.Students -> SchoolRegistryScreen(initialTab = 0, compact = true)
+        AppRoute.Workers -> SchoolRegistryScreen(initialTab = 1, compact = true)
         AppRoute.Statistics -> StatisticsScreen(compact = true)
         AppRoute.Teachers -> StatisticsScreen(initialTab = 2, compact = true)
         AppRoute.Submissions -> SubmissionsScreen()
@@ -255,6 +261,8 @@ private fun MoreMenu(
 private fun iconFor(route: AppRoute): ImageVector = when (route) {
     AppRoute.Dashboard -> Icons.Default.SpaceDashboard
     AppRoute.Schools -> Icons.Default.School
+    AppRoute.Students -> Icons.Default.PersonAdd
+    AppRoute.Workers -> Icons.Default.Badge
     AppRoute.Statistics -> Icons.Default.BarChart
     AppRoute.Teachers -> Icons.Default.Groups
     AppRoute.Submissions -> Icons.Default.Inbox

@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.schoolstats.domain.census.CensusAggregator
 import com.schoolstats.domain.model.DashboardStats
+import com.schoolstats.domain.model.SchoolRegistrySummary
 import com.schoolstats.domain.model.labelFr
 import com.schoolstats.presentation.components.AdaptiveChartStack
 import com.schoolstats.presentation.components.AdaptiveKpiGrid
@@ -36,11 +37,25 @@ fun DashboardScreen(
         CircularProgressIndicator()
         return
     }
-    DashboardContent(stats = uiState.stats, compact = compact)
+    DashboardContent(
+        stats = uiState.stats,
+        compact = compact,
+        isSchoolAccount = uiState.isSchoolAccount,
+        registry = uiState.registry,
+    )
 }
 
 @Composable
-fun DashboardContent(stats: DashboardStats, compact: Boolean = false) {
+fun DashboardContent(
+    stats: DashboardStats,
+    compact: Boolean = false,
+    isSchoolAccount: Boolean = false,
+    registry: SchoolRegistrySummary = SchoolRegistrySummary(),
+) {
+    if (isSchoolAccount) {
+        SchoolDashboardContent(registry = registry, compact = compact)
+        return
+    }
     val census = stats.census
     Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         PageHeader(
@@ -115,6 +130,51 @@ fun DashboardContent(stats: DashboardStats, compact: Boolean = false) {
                         ChartDatum(row.educationLevel.labelFr(), row.totalCount.toFloat(), ChartPalette.series[i % ChartPalette.series.size])
                     },
                     modifier = mod,
+                )
+            },
+        )
+    }
+}
+
+@Composable
+private fun SchoolDashboardContent(registry: SchoolRegistrySummary, compact: Boolean) {
+    Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        PageHeader(
+            "Tableau de bord — ${registry.schoolName.ifBlank { "votre école" }}",
+            "Enregistrez les élèves et les travailleurs de l'établissement. Les totaux se mettent à jour automatiquement.",
+        )
+        AdaptiveKpiGrid(
+            compact,
+            { KpiCard("Élèves", formatInt(registry.studentCount), "G ${formatInt(registry.studentBoys)} · F ${formatInt(registry.studentGirls)}", ChartPalette.boys, it) },
+            { KpiCard("Travailleurs", formatInt(registry.workerCount), "H ${formatInt(registry.workerMen)} · F ${formatInt(registry.workerWomen)}", ChartPalette.teal, it) },
+            { KpiCard("Enseignants", formatInt(registry.teacherCount), accent = ChartPalette.navy, modifier = it) },
+            { KpiCard("Ouvriers", formatInt(registry.ouvrierCount), "Admin ${formatInt(registry.adminCount)}", ChartPalette.gold, it) },
+        )
+        AdaptiveChartStack(
+            compact,
+            { mod ->
+                DonutChartCard(
+                    title = "Élèves enregistrés",
+                    centerLabel = formatInt(registry.studentCount),
+                    data = listOf(
+                        ChartDatum("Garçons", registry.studentBoys.toFloat(), ChartPalette.boys),
+                        ChartDatum("Filles", registry.studentGirls.toFloat(), ChartPalette.girls),
+                    ),
+                    modifier = mod,
+                    stacked = compact,
+                )
+            },
+            { mod ->
+                DonutChartCard(
+                    title = "Travailleurs enregistrés",
+                    centerLabel = formatInt(registry.workerCount),
+                    data = listOf(
+                        ChartDatum("Enseignants", registry.teacherCount.toFloat(), ChartPalette.teal),
+                        ChartDatum("Administratif", registry.adminCount.toFloat(), ChartPalette.women),
+                        ChartDatum("Ouvriers", registry.ouvrierCount.toFloat(), ChartPalette.gold),
+                    ),
+                    modifier = mod,
+                    stacked = compact,
                 )
             },
         )

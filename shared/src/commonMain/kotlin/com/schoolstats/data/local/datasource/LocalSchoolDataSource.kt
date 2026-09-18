@@ -60,4 +60,8 @@ class LocalSchoolDataSource(
     suspend fun count(): Long = withContext(Dispatchers.IO) {
         queries.countSchools().executeAsOne()
     }
+
+    suspend fun getById(id: String): School? = withContext(Dispatchers.IO) {
+        queries.selectSchoolById(id).executeAsOneOrNull()?.toDomain()
+    }
 }

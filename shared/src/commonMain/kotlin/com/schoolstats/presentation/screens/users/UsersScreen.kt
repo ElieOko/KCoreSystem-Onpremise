@@ -30,6 +30,9 @@ fun UsersScreen(viewModel: UsersViewModel = koinViewModel()) {
                         Text(user.fullName, fontWeight = FontWeight.SemiBold)
                         Text(user.email, style = MaterialTheme.typography.bodySmall)
                         Text("${user.role.name} — ${if (user.isActive) "Actif" else "Inactif"}", style = MaterialTheme.typography.bodySmall)
+                        if (user.role == com.schoolstats.domain.model.UserRole.ECOLE) {
+                            Text("Compte école : enregistre les élèves et les travailleurs.", style = MaterialTheme.typography.bodySmall)
+                        }
                     }
                 }
             }

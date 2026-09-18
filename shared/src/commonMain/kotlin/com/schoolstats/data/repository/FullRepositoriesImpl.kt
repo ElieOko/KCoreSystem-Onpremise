@@ -74,19 +74,30 @@ class AuthRepositoryImpl(
 
     override suspend fun login(email: String, password: String): Result<UserProfile> = runCatching {
         if (!isConfigured()) {
-            if (email.equals("demo@local", ignoreCase = true) && password == "demo") {
-                val demo = UserProfile(
-                    id = "demo-admin",
-                    fullName = "Admin Démo",
-                    email = email,
-                    role = UserRole.ADMIN_SOUS_DIVISION,
-                    subdivisionId = DemoDataSeeder.DEMO_SUBDIVISION,
-                )
+            if (DemoDataSeeder.isLocalDemoLogin(email, password)) {
+                val demo = if (DemoDataSeeder.isSchoolDemo(email)) {
+                    UserProfile(
+                        id = "demo-ecole",
+                        fullName = "Directeur École",
+                        email = DemoDataSeeder.DEMO_SCHOOL_EMAIL,
+                        role = UserRole.ECOLE,
+                        schoolId = DemoDataSeeder.DEMO_SCHOOL_ID,
+                        subdivisionId = DemoDataSeeder.DEMO_SUBDIVISION,
+                    )
+                } else {
+                    UserProfile(
+                        id = "demo-admin",
+                        fullName = "Admin Démo",
+                        email = DemoDataSeeder.DEMO_ADMIN_EMAIL,
+                        role = UserRole.ADMIN_SOUS_DIVISION,
+                        subdivisionId = DemoDataSeeder.DEMO_SUBDIVISION,
+                    )
+                }
                 _currentProfile.value = demo
                 seedDemoDataIfNeeded()
                 return@runCatching demo
             }
-            error("Supabase non configuré. Utilisez demo@local / demo.")
+            error("Supabase non configuré. Utilisez demo@local / demo (sous-division) ou ecole@local / demo (école).")
         }
         remoteAuth.login(email, password)
         refreshProfile().getOrThrow()
@@ -140,8 +151,16 @@ class SubmissionRepositoryImpl(
 
     override suspend fun getOrCreateSubmission(schoolId: String, schoolYearId: String): Submission {
         val existing = local.observeSubmissions(null).first()
-            .firstOrNull { it.schoolId == schoolId && it.schoolYearId == schoolYearId }
-        if (existing != null) return existing
+            .filter { it.schoolId == schoolId && it.schoolYearId == schoolYearId }
+        val editable = existing.firstOrNull {
+            it.status in setOf(
+                SubmissionStatus.BROUILLON,
+                SubmissionStatus.REJETE,
+                SubmissionStatus.CORRECTION_DEMANDEE,
+            )
+        }
+        if (editable != null) return editable
+        existing.firstOrNull()?.let { return it }
         val created = Submission(
             id = randomUuid(),
             schoolId = schoolId,
@@ -395,7 +414,7 @@ class UserManagementRepositoryImpl : UserManagementRepository {
         emit(
             listOf(
                 ManagedUser("demo-admin", "Admin Démo", "demo@local", UserRole.ADMIN_SOUS_DIVISION, true),
-                ManagedUser("u-2", "Directeur École", "ecole@local", UserRole.ECOLE, true),
+                ManagedUser("demo-ecole", "Directeur École", "ecole@local", UserRole.ECOLE, true),
                 ManagedUser("u-3", "Admin Provincial", "prov@local", UserRole.ADMIN_PROVINCIAL, true),
             ),
         )

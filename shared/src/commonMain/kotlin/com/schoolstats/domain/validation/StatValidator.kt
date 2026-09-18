@@ -6,7 +6,10 @@ import com.schoolstats.domain.model.CertificationResult
 import com.schoolstats.domain.model.EnrollmentStat
 import com.schoolstats.domain.model.PrimaryClassStat
 import com.schoolstats.domain.model.SecondaryStudentStat
+import com.schoolstats.domain.model.StudentRecord
 import com.schoolstats.domain.model.TeacherStatDetail
+import com.schoolstats.domain.model.WorkerCategory
+import com.schoolstats.domain.model.WorkerRecord
 import com.schoolstats.domain.model.WorkerStat
 
 data class ValidationError(val field: String, val message: String)
@@ -62,6 +65,24 @@ object StatValidator {
         }
         if (result.boysSucceeded + result.girlsSucceeded > result.successesCount) {
             add(ValidationError("gender", "Répartition sexe incohérente (${result.className})."))
+        }
+    }
+
+    fun validateStudentRecord(student: StudentRecord): List<ValidationError> = buildList {
+        if (student.fullName.isBlank()) add(ValidationError("fullName", "Le nom de l'élève est obligatoire."))
+        if (student.className.isBlank()) add(ValidationError("className", "La classe de l'élève est obligatoire."))
+        if (student.age < 5 || student.age > 25) add(ValidationError("age", "L'âge de l'élève doit être entre 5 et 25 ans."))
+        if (student.schoolId.isBlank()) add(ValidationError("schoolId", "L'école de l'élève est obligatoire."))
+    }
+
+    fun validateWorkerRecord(worker: WorkerRecord): List<ValidationError> = buildList {
+        if (worker.fullName.isBlank()) add(ValidationError("fullName", "Le nom du travailleur est obligatoire."))
+        if (worker.schoolId.isBlank()) add(ValidationError("schoolId", "L'école du travailleur est obligatoire."))
+        if (worker.category == WorkerCategory.ENSEIGNANT && worker.teacherBranch == null) {
+            add(ValidationError("teacherBranch", "La branche de l'enseignant est obligatoire."))
+        }
+        if (worker.category == WorkerCategory.ADMINISTRATIF && worker.adminFunction == null) {
+            add(ValidationError("adminFunction", "La fonction administrative est obligatoire."))
         }
     }
 

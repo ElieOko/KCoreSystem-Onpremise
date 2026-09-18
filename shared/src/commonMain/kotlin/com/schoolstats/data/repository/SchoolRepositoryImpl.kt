@@ -17,13 +17,7 @@ class SchoolRepositoryImpl(
 ) : SchoolRepository {
     override fun observeSchools(query: String): Flow<List<School>> = local.observeSchools(query)
 
-    override suspend fun getSchool(id: String): School? {
-        return local.observeSchools("").let { flow ->
-            var result: School? = null
-            flow.collect { schools -> result = schools.find { it.id == id }; return@collect }
-            result
-        }
-    }
+    override suspend fun getSchool(id: String): School? = local.getById(id)
 
     override suspend fun saveSchool(school: School): Result<School> = runCatching {
         val toSave = if (school.id.isBlank()) school.copy(id = randomUuid()) else school
