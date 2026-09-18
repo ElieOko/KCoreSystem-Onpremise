@@ -111,6 +111,11 @@ fun LoginScreen(
                         password = "demo"
                         viewModel.login("demo@local", "demo")
                     },
+                    onSchoolDemoLogin = {
+                        email = "ecole@local"
+                        password = "demo"
+                        viewModel.login("ecole@local", "demo")
+                    },
                     modifier = Modifier.weight(0.95f).fillMaxHeight(),
                 )
             }
@@ -131,6 +136,11 @@ fun LoginScreen(
                         email = "demo@local"
                         password = "demo"
                         viewModel.login("demo@local", "demo")
+                    },
+                    onSchoolDemoLogin = {
+                        email = "ecole@local"
+                        password = "demo"
+                        viewModel.login("ecole@local", "demo")
                     },
                     modifier = Modifier.weight(1f).fillMaxWidth(),
                 )
@@ -203,7 +213,7 @@ private fun BrandPanel(modifier: Modifier = Modifier, compact: Boolean = false) 
             }
             if (!compact) {
                 Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                    BrandPoint(Icons.Default.BarChart, "Effectifs, âges, enseignants, administratif et ouvriers")
+                    BrandPoint(Icons.Default.BarChart, "Les écoles enregistrent leurs élèves et travailleurs")
                     BrandPoint(Icons.Default.Verified, "Validation des déclarations par la sous-division")
                     BrandPoint(Icons.Default.Hub, "Fichier central agrégé, graphiques et exports")
                     Spacer(Modifier.height(8.dp))
@@ -239,6 +249,7 @@ private fun FormPanel(
     onTogglePassword: () -> Unit,
     onSubmit: () -> Unit,
     onDemoLogin: () -> Unit,
+    onSchoolDemoLogin: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(modifier, color = MaterialTheme.colorScheme.surface) {
@@ -256,7 +267,7 @@ private fun FormPanel(
             ) {
                 Text("Connexion", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
                 Text(
-                    "Accédez à l’espace de saisie ou au fichier central de votre sous-division.",
+                    "Accédez au compte de votre école pour enregistrer les élèves et les travailleurs, ou au fichier central de la sous-division.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(0.65f),
                 )
@@ -314,6 +325,14 @@ private fun FormPanel(
                     HorizontalDivider(Modifier.weight(1f))
                 }
                 OutlinedButton(
+                    onClick = onSchoolDemoLogin,
+                    enabled = !isLoading,
+                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    shape = RoundedCornerShape(12.dp),
+                ) {
+                    Text("Ouvrir le compte école")
+                }
+                OutlinedButton(
                     onClick = onDemoLogin,
                     enabled = !isLoading,
                     modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -322,7 +341,7 @@ private fun FormPanel(
                     Text("Ouvrir la démo sous-division")
                 }
                 Text(
-                    "Démo : demo@local  ·  mot de passe demo",
+                    "École : ecole@local  ·  Sous-division : demo@local  ·  mot de passe demo",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(0.5f),
                 )

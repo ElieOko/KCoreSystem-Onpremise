@@ -7,6 +7,32 @@ enum class UserRole {
     ECOLE,
 }
 
+enum class Gender {
+    MALE, FEMALE,
+}
+
+fun Gender.labelStudentFr(): String = when (this) {
+    Gender.MALE -> "Garçon"
+    Gender.FEMALE -> "Fille"
+}
+
+fun Gender.labelWorkerFr(): String = when (this) {
+    Gender.MALE -> "Homme"
+    Gender.FEMALE -> "Femme"
+}
+
+enum class WorkerCategory {
+    ENSEIGNANT,
+    ADMINISTRATIF,
+    OUVRIER,
+}
+
+fun WorkerCategory.labelFr(): String = when (this) {
+    WorkerCategory.ENSEIGNANT -> "Enseignant"
+    WorkerCategory.ADMINISTRATIF -> "Administratif"
+    WorkerCategory.OUVRIER -> "Ouvrier"
+}
+
 enum class SubmissionStatus {
     BROUILLON,
     SOUMIS,
@@ -342,4 +368,44 @@ data class ReportRequest(
     val schoolYearName: String,
     val subdivisionName: String?,
     val stats: CentralizationStats,
+)
+
+data class StudentRecord(
+    val id: String = "",
+    val schoolId: String,
+    val schoolYearId: String = "",
+    val fullName: String,
+    val gender: Gender,
+    val className: String,
+    val age: Int,
+    val sectionName: String? = null,
+    val optionName: String? = null,
+) {
+    val isSecondary: Boolean get() = !sectionName.isNullOrBlank()
+}
+
+data class WorkerRecord(
+    val id: String = "",
+    val schoolId: String,
+    val schoolYearId: String = "",
+    val fullName: String,
+    val gender: Gender,
+    val category: WorkerCategory,
+    val educationLevel: EducationLevel = EducationLevel.AUTRES,
+    val teacherBranch: TeacherBranch? = null,
+    val adminFunction: AdminStaffFunction? = null,
+)
+
+data class SchoolRegistrySummary(
+    val schoolId: String = "",
+    val schoolName: String = "",
+    val studentCount: Int = 0,
+    val studentBoys: Int = 0,
+    val studentGirls: Int = 0,
+    val workerCount: Int = 0,
+    val workerMen: Int = 0,
+    val workerWomen: Int = 0,
+    val teacherCount: Int = 0,
+    val adminCount: Int = 0,
+    val ouvrierCount: Int = 0,
 )

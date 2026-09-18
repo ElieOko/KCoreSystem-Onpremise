@@ -8,8 +8,10 @@ enum class AppRoute(
 ) {
     Dashboard("Tableau de bord"),
     Schools("Écoles", setOf(UserRole.SUPER_ADMIN, UserRole.ADMIN_PROVINCIAL, UserRole.ADMIN_SOUS_DIVISION)),
+    Students("Élèves"),
+    Workers("Travailleurs"),
     Statistics("Statistiques scolaires"),
-    Teachers("Personnel"),
+    Teachers("Personnel", setOf(UserRole.SUPER_ADMIN, UserRole.ADMIN_PROVINCIAL, UserRole.ADMIN_SOUS_DIVISION)),
     Submissions("Déclarations reçues", setOf(UserRole.SUPER_ADMIN, UserRole.ADMIN_PROVINCIAL, UserRole.ADMIN_SOUS_DIVISION)),
     Validation("Validation", setOf(UserRole.SUPER_ADMIN, UserRole.ADMIN_SOUS_DIVISION)),
     Centralization("Fichier central", setOf(UserRole.SUPER_ADMIN, UserRole.ADMIN_PROVINCIAL, UserRole.ADMIN_SOUS_DIVISION)),

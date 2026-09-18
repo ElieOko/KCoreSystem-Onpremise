@@ -54,7 +54,7 @@ class SubmissionsViewModel(
 
 data class StatisticsUiState(
     val submissionId: String = DemoDataSeeder.DEMO_SUBMISSION_ID,
-    val schoolId: String = "sch-1",
+    val schoolId: String = DemoDataSeeder.DEMO_SCHOOL_ID,
     val tab: Int = 0,
     val primary: List<PrimaryClassStat> = CensusDefaults.emptyPrimary(),
     val secondary: List<SecondaryStudentStat> = CensusDefaults.emptySecondary(),
@@ -75,12 +75,25 @@ private fun defaultCerts() = listOf(
 class StatisticsViewModel(
     private val statisticsRepository: StatisticsRepository,
     private val submissionRepository: SubmissionRepository,
+    private val authRepository: com.schoolstats.domain.repository.AuthRepository,
+    private val schoolYearRepository: com.schoolstats.domain.repository.SchoolYearRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(StatisticsUiState())
     val uiState: StateFlow<StatisticsUiState> = _uiState.asStateFlow()
 
     init {
-        load(DemoDataSeeder.DEMO_SUBMISSION_ID)
+        viewModelScope.launch {
+            val profile = authRepository.currentProfile.value
+            val schoolId = profile?.schoolId
+            if (schoolId.isNullOrBlank()) {
+                load(DemoDataSeeder.DEMO_SUBMISSION_ID)
+            } else {
+                val yearId = schoolYearRepository.getDefaultYear().id
+                val submission = submissionRepository.getOrCreateSubmission(schoolId, yearId)
+                _uiState.update { it.copy(submissionId = submission.id, schoolId = schoolId) }
+                load(submission.id)
+            }
+        }
     }
 
     fun load(submissionId: String) {

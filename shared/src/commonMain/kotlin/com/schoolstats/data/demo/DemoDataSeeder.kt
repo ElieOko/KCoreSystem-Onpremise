@@ -11,17 +11,21 @@ import com.schoolstats.domain.model.AppNotification
 import com.schoolstats.domain.model.CertificationResult
 import com.schoolstats.domain.model.EducationLevel
 import com.schoolstats.domain.model.EnrollmentStat
+import com.schoolstats.domain.model.Gender
 import com.schoolstats.domain.model.NotificationType
 import com.schoolstats.domain.model.PrimaryClassStat
 import com.schoolstats.domain.model.School
 import com.schoolstats.domain.model.SchoolOwnership
 import com.schoolstats.domain.model.SchoolType
 import com.schoolstats.domain.model.SecondaryStudentStat
+import com.schoolstats.domain.model.StudentRecord
 import com.schoolstats.domain.model.Submission
 import com.schoolstats.domain.model.SubmissionStatus
 import com.schoolstats.domain.model.SyncStatus
 import com.schoolstats.domain.model.TeacherBranch
 import com.schoolstats.domain.model.TeacherStatDetail
+import com.schoolstats.domain.model.WorkerCategory
+import com.schoolstats.domain.model.WorkerRecord
 import com.schoolstats.domain.model.WorkerStat
 import com.schoolstats.util.currentTimeMillis
 import com.schoolstats.util.randomUuid
@@ -34,6 +38,22 @@ object DemoDataSeeder {
     const val DEMO_SUBMISSION_ID = "demo-submission-1"
     const val DEMO_SUBMISSION_2 = "demo-submission-2"
     const val DEMO_SUBMISSION_3 = "demo-submission-3"
+    const val DEMO_SCHOOL_ID = "sch-1"
+    const val DEMO_SCHOOL_NAME = "École Primaire Limete"
+    const val DEMO_SCHOOL_CODE = "EP-LIM-01"
+    const val DEMO_ADMIN_EMAIL = "demo@local"
+    const val DEMO_SCHOOL_EMAIL = "ecole@local"
+    const val DEMO_PASSWORD = "demo"
+
+    fun isLocalDemoLogin(email: String, password: String): Boolean {
+        val normalized = email.trim()
+        return password == DEMO_PASSWORD && (
+            normalized.equals(DEMO_ADMIN_EMAIL, ignoreCase = true) ||
+                normalized.equals(DEMO_SCHOOL_EMAIL, ignoreCase = true)
+            )
+    }
+
+    fun isSchoolDemo(email: String): Boolean = email.trim().equals(DEMO_SCHOOL_EMAIL, ignoreCase = true)
 
     suspend fun seedIfEmpty(
         schools: LocalSchoolDataSource,
@@ -279,5 +299,82 @@ object DemoDataSeeder {
         AdminStaffStat(function = AdminStaffFunction.DIRECTEUR_DE_DISCIPLINE, educationLevel = EducationLevel.GRADUE, menCount = 1, womenCount = 0),
         AdminStaffStat(function = AdminStaffFunction.CONSEILLER_ORIENTATION, educationLevel = EducationLevel.LICENCE, menCount = 0, womenCount = 1),
         AdminStaffStat(function = AdminStaffFunction.SURNUMERAIRE, educationLevel = EducationLevel.D6, menCount = 1, womenCount = 1),
+    )
+
+    fun schoolStudents(schoolId: String = DEMO_SCHOOL_ID, schoolYearId: String = DEMO_YEAR_ID): List<StudentRecord> = listOf(
+        StudentRecord(schoolId = schoolId, schoolYearId = schoolYearId, fullName = "Jean Mbala", gender = Gender.MALE, className = "1ère année", age = 6),
+        StudentRecord(schoolId = schoolId, schoolYearId = schoolYearId, fullName = "Marie Kabila", gender = Gender.FEMALE, className = "1ère année", age = 7),
+        StudentRecord(schoolId = schoolId, schoolYearId = schoolYearId, fullName = "Patrick Tshilombo", gender = Gender.MALE, className = "2ème année", age = 8),
+        StudentRecord(schoolId = schoolId, schoolYearId = schoolYearId, fullName = "Grâce Mwamba", gender = Gender.FEMALE, className = "2ème année", age = 8),
+        StudentRecord(schoolId = schoolId, schoolYearId = schoolYearId, fullName = "David Ilunga", gender = Gender.MALE, className = "3ème année", age = 9),
+        StudentRecord(schoolId = schoolId, schoolYearId = schoolYearId, fullName = "Sarah Kasongo", gender = Gender.FEMALE, className = "3ème année", age = 10),
+        StudentRecord(schoolId = schoolId, schoolYearId = schoolYearId, fullName = "Pierre Ngoie", gender = Gender.MALE, className = "4ème année", age = 11),
+        StudentRecord(schoolId = schoolId, schoolYearId = schoolYearId, fullName = "Amina Fwamba", gender = Gender.FEMALE, className = "5ème année", age = 12),
+        StudentRecord(schoolId = schoolId, schoolYearId = schoolYearId, fullName = "Joseph Mbuyi", gender = Gender.MALE, className = "6ème année", age = 13),
+        StudentRecord(schoolId = schoolId, schoolYearId = schoolYearId, fullName = "Jeanne Kalala", gender = Gender.FEMALE, className = "6ème année", age = 13),
+    )
+
+    fun schoolWorkers(schoolId: String = DEMO_SCHOOL_ID, schoolYearId: String = DEMO_YEAR_ID): List<WorkerRecord> = listOf(
+        WorkerRecord(
+            schoolId = schoolId,
+            schoolYearId = schoolYearId,
+            fullName = "Paul Kalala",
+            gender = Gender.MALE,
+            category = WorkerCategory.ENSEIGNANT,
+            educationLevel = EducationLevel.GRADUE,
+            teacherBranch = TeacherBranch.PRIMAIRE,
+        ),
+        WorkerRecord(
+            schoolId = schoolId,
+            schoolYearId = schoolYearId,
+            fullName = "Sarah Ilunga",
+            gender = Gender.FEMALE,
+            category = WorkerCategory.ENSEIGNANT,
+            educationLevel = EducationLevel.LICENCE,
+            teacherBranch = TeacherBranch.PRIMAIRE,
+        ),
+        WorkerRecord(
+            schoolId = schoolId,
+            schoolYearId = schoolYearId,
+            fullName = "Chantal Mwamba",
+            gender = Gender.FEMALE,
+            category = WorkerCategory.ENSEIGNANT,
+            educationLevel = EducationLevel.D6,
+            teacherBranch = TeacherBranch.PRIMAIRE,
+        ),
+        WorkerRecord(
+            schoolId = schoolId,
+            schoolYearId = schoolYearId,
+            fullName = "Joseph Ngoie",
+            gender = Gender.MALE,
+            category = WorkerCategory.ADMINISTRATIF,
+            educationLevel = EducationLevel.LICENCE,
+            adminFunction = AdminStaffFunction.DIRECTEUR,
+        ),
+        WorkerRecord(
+            schoolId = schoolId,
+            schoolYearId = schoolYearId,
+            fullName = "Amina Fwamba",
+            gender = Gender.FEMALE,
+            category = WorkerCategory.ADMINISTRATIF,
+            educationLevel = EducationLevel.D6,
+            adminFunction = AdminStaffFunction.SECRETAIRE,
+        ),
+        WorkerRecord(
+            schoolId = schoolId,
+            schoolYearId = schoolYearId,
+            fullName = "Pierre Mbuyi",
+            gender = Gender.MALE,
+            category = WorkerCategory.OUVRIER,
+            educationLevel = EducationLevel.D4,
+        ),
+        WorkerRecord(
+            schoolId = schoolId,
+            schoolYearId = schoolYearId,
+            fullName = "Jeanne Kasongo",
+            gender = Gender.FEMALE,
+            category = WorkerCategory.OUVRIER,
+            educationLevel = EducationLevel.D6,
+        ),
     )
 }

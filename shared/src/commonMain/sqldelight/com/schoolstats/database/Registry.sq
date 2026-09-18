@@ -1,0 +1,55 @@
+CREATE TABLE local_student_record (
+    id TEXT NOT NULL PRIMARY KEY,
+    school_id TEXT NOT NULL,
+    school_year_id TEXT NOT NULL,
+    full_name TEXT NOT NULL,
+    gender TEXT NOT NULL,
+    class_name TEXT NOT NULL,
+    age INTEGER NOT NULL,
+    section_name TEXT,
+    option_name TEXT,
+    updated_at INTEGER NOT NULL
+);
+
+CREATE TABLE local_worker_record (
+    id TEXT NOT NULL PRIMARY KEY,
+    school_id TEXT NOT NULL,
+    school_year_id TEXT NOT NULL,
+    full_name TEXT NOT NULL,
+    gender TEXT NOT NULL,
+    category TEXT NOT NULL,
+    education_level TEXT NOT NULL,
+    teacher_branch TEXT,
+    admin_function TEXT,
+    updated_at INTEGER NOT NULL
+);
+
+selectStudentsBySchool:
+SELECT * FROM local_student_record
+WHERE school_id = :school_id AND school_year_id = :school_year_id
+ORDER BY class_name ASC, full_name ASC;
+
+selectWorkersBySchool:
+SELECT * FROM local_worker_record
+WHERE school_id = :school_id AND school_year_id = :school_year_id
+ORDER BY category ASC, full_name ASC;
+
+countStudentsBySchool:
+SELECT COUNT(*) FROM local_student_record
+WHERE school_id = :school_id AND school_year_id = :school_year_id;
+
+upsertStudentRecord:
+INSERT OR REPLACE INTO local_student_record(
+    id, school_id, school_year_id, full_name, gender, class_name, age, section_name, option_name, updated_at
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteStudentRecord:
+DELETE FROM local_student_record WHERE id = :id;
+
+upsertWorkerRecord:
+INSERT OR REPLACE INTO local_worker_record(
+    id, school_id, school_year_id, full_name, gender, category, education_level, teacher_branch, admin_function, updated_at
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteWorkerRecord:
+DELETE FROM local_worker_record WHERE id = :id;

@@ -14,10 +14,12 @@ import com.schoolstats.domain.model.ReportRequest
 import com.schoolstats.domain.model.School
 import com.schoolstats.domain.model.SchoolYear
 import com.schoolstats.domain.model.SecondaryStudentStat
+import com.schoolstats.domain.model.StudentRecord
 import com.schoolstats.domain.model.Submission
 import com.schoolstats.domain.model.SubmissionStatus
 import com.schoolstats.domain.model.TeacherStatDetail
 import com.schoolstats.domain.model.UserProfile
+import com.schoolstats.domain.model.WorkerRecord
 import com.schoolstats.domain.model.WorkerStat
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -96,4 +98,14 @@ interface ReportRepository {
 interface ExportRepository {
     suspend fun exportExcel(report: ReportRequest, path: String): Result<String>
     suspend fun exportPdf(report: ReportRequest, path: String): Result<String>
+}
+
+interface SchoolRegistryRepository {
+    fun observeStudents(schoolId: String, schoolYearId: String): Flow<List<StudentRecord>>
+    fun observeWorkers(schoolId: String, schoolYearId: String): Flow<List<WorkerRecord>>
+    suspend fun saveStudent(student: StudentRecord): Result<StudentRecord>
+    suspend fun deleteStudent(id: String, schoolId: String, schoolYearId: String): Result<Unit>
+    suspend fun saveWorker(worker: WorkerRecord): Result<WorkerRecord>
+    suspend fun deleteWorker(id: String, schoolId: String, schoolYearId: String): Result<Unit>
+    suspend fun seedDemoIfEmpty(schoolId: String, schoolYearId: String)
 }

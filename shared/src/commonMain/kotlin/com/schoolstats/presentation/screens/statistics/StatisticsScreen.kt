@@ -70,7 +70,7 @@ fun StatisticsScreen(
     ) {
         PageHeader(
             title = "Saisie des statistiques scolaires",
-            subtitle = "Renseignez les effectifs, le personnel et les niveaux d'études. Les totaux se calculent automatiquement. La sous-division agrège ensuite le fichier central.",
+            subtitle = "Renseignez les effectifs, le personnel et les niveaux d'études. Depuis le compte école, enregistrez aussi chaque élève et chaque travailleur. Les totaux se calculent automatiquement.",
         )
         SummaryStrip(state.primary, state.secondary, state.teachers, state.workers, state.adminStaff, compact)
         PrimaryScrollableTabRow(selectedTabIndex = state.tab, edgePadding = 0.dp) {

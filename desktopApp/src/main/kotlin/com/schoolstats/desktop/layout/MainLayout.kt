@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Groups
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.filled.Hub
 import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SpaceDashboard
@@ -150,6 +152,8 @@ private fun Sidebar(
 private fun iconFor(route: AppRoute): ImageVector = when (route) {
     AppRoute.Dashboard -> Icons.Default.SpaceDashboard
     AppRoute.Schools -> Icons.Default.School
+    AppRoute.Students -> Icons.Default.PersonAdd
+    AppRoute.Workers -> Icons.Default.Badge
     AppRoute.Statistics -> Icons.Default.BarChart
     AppRoute.Teachers -> Icons.Default.Groups
     AppRoute.Submissions -> Icons.Default.Inbox

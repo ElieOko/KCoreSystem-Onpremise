@@ -4,6 +4,7 @@ import com.schoolstats.data.export.ExportService
 import com.schoolstats.data.local.createDatabaseDriverFactory
 import com.schoolstats.data.local.database.SchoolStatsDatabase
 import com.schoolstats.data.local.datasource.ExtendedStatisticsLocalDataSource
+import com.schoolstats.data.local.datasource.LocalRegistryDataSource
 import com.schoolstats.data.local.datasource.LocalSchoolDataSource
 import com.schoolstats.data.local.datasource.LocalStatisticsDataSource
 import com.schoolstats.data.local.datasource.LocalSubmissionDataSource
@@ -20,6 +21,7 @@ import com.schoolstats.data.repository.CentralizationRepositoryImpl
 import com.schoolstats.data.repository.DashboardRepositoryImpl
 import com.schoolstats.data.repository.NotificationRepositoryImpl
 import com.schoolstats.data.repository.ReportRepositoryImpl
+import com.schoolstats.data.repository.SchoolRegistryRepositoryImpl
 import com.schoolstats.data.repository.SchoolRepositoryImpl
 import com.schoolstats.data.repository.SchoolYearRepositoryImpl
 import com.schoolstats.data.repository.StatisticsRepositoryImpl
@@ -32,6 +34,7 @@ import com.schoolstats.domain.repository.CentralizationRepository
 import com.schoolstats.domain.repository.DashboardRepository
 import com.schoolstats.domain.repository.NotificationRepository
 import com.schoolstats.domain.repository.ReportRepository
+import com.schoolstats.domain.repository.SchoolRegistryRepository
 import com.schoolstats.domain.repository.SchoolRepository
 import com.schoolstats.domain.repository.SchoolYearRepository
 import com.schoolstats.domain.repository.StatisticsRepository
@@ -47,6 +50,7 @@ import com.schoolstats.presentation.viewmodel.AuthViewModel
 import com.schoolstats.presentation.viewmodel.CentralizationViewModel
 import com.schoolstats.presentation.viewmodel.DashboardViewModel
 import com.schoolstats.presentation.viewmodel.ReportsViewModel
+import com.schoolstats.presentation.viewmodel.SchoolRegistryViewModel
 import com.schoolstats.presentation.viewmodel.SchoolsViewModel
 import com.schoolstats.presentation.viewmodel.SettingsViewModel
 import com.schoolstats.presentation.viewmodel.StatisticsViewModel
@@ -63,6 +67,7 @@ val dataModule = module {
     single { LocalSubmissionDataSource(get()) }
     single { LocalStatisticsDataSource(get()) }
     single { ExtendedStatisticsLocalDataSource(get()) }
+    single { LocalRegistryDataSource(get()) }
     single { RemoteAuthDataSource(get()) }
     single { RemoteProfileDataSource(get()) }
     single { RemoteSchoolDataSource(get()) }
@@ -83,6 +88,7 @@ val dataModule = module {
     single<SchoolYearRepository> { SchoolYearRepositoryImpl(get()) }
     single<SubmissionRepository> { SubmissionRepositoryImpl(get(), get(), get(), get()) }
     single<StatisticsRepository> { StatisticsRepositoryImpl(get(), get(), get()) }
+    single<SchoolRegistryRepository> { SchoolRegistryRepositoryImpl(get(), get(), get(), get()) }
     single<DashboardRepository> { DashboardRepositoryImpl(get(), get(), get()) }
     single<CentralizationRepository> { CentralizationRepositoryImpl(get(), get(), get()) }
     single<NotificationRepository> { NotificationRepositoryImpl(get()) }
@@ -101,10 +107,11 @@ val domainModule = module {
 
 val viewModelModule = module {
     viewModel { AuthViewModel(get(), get(), get()) }
-    viewModel { DashboardViewModel(get(), get()) }
+    viewModel { DashboardViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { SchoolsViewModel(get(), get(), get()) }
     viewModel { SubmissionsViewModel(get()) }
-    viewModel { StatisticsViewModel(get(), get()) }
+    viewModel { StatisticsViewModel(get(), get(), get(), get()) }
+    viewModel { SchoolRegistryViewModel(get(), get(), get(), get()) }
     viewModel { ValidationViewModel(get()) }
     viewModel { CentralizationViewModel(get(), get()) }
     viewModel { ReportsViewModel(get(), get()) }

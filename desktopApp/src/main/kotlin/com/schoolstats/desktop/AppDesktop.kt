@@ -17,6 +17,7 @@ import com.schoolstats.presentation.screens.auth.LoginScreen
 import com.schoolstats.presentation.screens.centralization.CentralizationScreen
 import com.schoolstats.presentation.screens.dashboard.DashboardScreen
 import com.schoolstats.presentation.screens.reports.ReportsScreen
+import com.schoolstats.presentation.screens.registry.SchoolRegistryScreen
 import com.schoolstats.presentation.screens.schools.SchoolsScreen
 import com.schoolstats.presentation.screens.settings.SettingsScreen
 import com.schoolstats.presentation.screens.statistics.StatisticsScreen
@@ -62,6 +63,8 @@ fun AppDesktop() {
                 when (currentRoute) {
                     AppRoute.Dashboard -> DashboardScreen()
                     AppRoute.Schools -> SchoolsScreen()
+                    AppRoute.Students -> SchoolRegistryScreen(initialTab = 0)
+                    AppRoute.Workers -> SchoolRegistryScreen(initialTab = 1)
                     AppRoute.Statistics -> StatisticsScreen()
                     AppRoute.Teachers -> StatisticsScreen(initialTab = 2)
                     AppRoute.Submissions -> SubmissionsScreen()
