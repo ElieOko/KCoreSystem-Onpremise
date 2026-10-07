@@ -55,7 +55,7 @@ kotlin {
         }
         jvmMain.dependencies {
             implementation(libs.kotlinx.coroutinesSwing)
-            implementation(libs.sqldelight.sqlite.driver)
+            api(libs.sqldelight.sqlite.driver)
             implementation(libs.ktor.client.cio)
             implementation(libs.apache.poi)
             implementation(libs.openpdf)

@@ -103,7 +103,7 @@ Connectez-vous avec `demo@local` / `demo` — des données de démonstration son
 
 ### Packaging Windows (`.exe`)
 
-Sur une machine Windows avec JDK 21 :
+Sur une machine Windows avec JDK 21. Le runtime embarqué inclut le module `java.sql` (requis par SQLDelight / SQLite). Sans ce module, l’installeur plante avec `java/sql/DriverManager`.
 
 ```bat
 gradlew.bat :desktopApp:createDistributable
@@ -116,6 +116,8 @@ Installer WiX :
 ```bat
 gradlew.bat :desktopApp:packageExe
 ```
+
+Après une correction de packaging, désinstallez l’ancienne version puis régénérez l’installeur — le `.exe` déjà installé ne se met pas à jour tout seul.
 
 ## Rôles utilisateurs
 
