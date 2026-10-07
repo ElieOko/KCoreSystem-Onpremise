@@ -31,6 +31,10 @@ import com.schoolstats.presentation.components.SectionCard
 import com.schoolstats.presentation.components.TableHeader
 import com.schoolstats.presentation.components.formatInt
 import com.schoolstats.domain.census.CensusAggregator
+import com.schoolstats.domain.education.EducationCycle
+import com.schoolstats.domain.education.RdcEducationSystem
+import com.schoolstats.domain.education.descriptionFr
+import com.schoolstats.domain.education.labelFr
 import com.schoolstats.domain.model.AdminStaffStat
 import com.schoolstats.domain.model.AgeSexStat
 import com.schoolstats.domain.model.EducationLevel
@@ -70,7 +74,7 @@ fun StatisticsScreen(
     ) {
         PageHeader(
             title = "Saisie des statistiques scolaires",
-            subtitle = "Renseignez les effectifs, le personnel et les niveaux d'études. Les totaux se calculent automatiquement. La sous-division agrège ensuite le fichier central.",
+            subtitle = "Classes officielles EPST (RDC) : maternelle, primaire, tronc commun (7ème-8ème) et humanités. Les totaux se calculent automatiquement.",
         )
         SummaryStrip(state.primary, state.secondary, state.teachers, state.workers, state.adminStaff, compact)
         PrimaryScrollableTabRow(selectedTabIndex = state.tab, edgePadding = 0.dp) {
@@ -123,20 +127,65 @@ private fun EffectifsTab(
     onPrimary: (Int, Int?, Int?) -> Unit,
     onSecondary: (Int, Int?, Int?) -> Unit,
 ) {
-    SectionCard("Primaire — effectifs inscrits", "Garçons, filles et total par classe") {
-        TableHeader(listOf("Classe" to 2f, "Garçons" to 1f, "Filles" to 1f, "Total" to 1f))
-        primary.forEachIndexed { index, stat ->
-            SexCountRow(stat.className, stat.boysCount, stat.girlsCount, { onPrimary(index, it, null) }, { onPrimary(index, null, it) })
+    listOf(EducationCycle.MATERNELLE, EducationCycle.PRIMAIRE).forEach { cycle ->
+        val rows = primary.mapIndexed { index, stat -> index to stat }
+            .filter { (_, stat) -> RdcEducationSystem.cycleOf(stat.className) == cycle }
+        if (rows.isNotEmpty()) {
+            SectionCard(
+                "${cycle.labelFr()} — effectifs inscrits",
+                cycle.descriptionFr(),
+            ) {
+                TableHeader(listOf("Classe officielle" to 2f, "Garçons" to 1f, "Filles" to 1f, "Total" to 1f))
+                rows.forEach { (index, stat) ->
+                    SexCountRow(stat.className, stat.boysCount, stat.girlsCount, { onPrimary(index, it, null) }, { onPrimary(index, null, it) })
+                }
+                TotalsRow(rows.sumOf { it.second.boysCount }, rows.sumOf { it.second.girlsCount })
+            }
         }
-        TotalsRow(primary.sumOf { it.boysCount }, primary.sumOf { it.girlsCount })
     }
-    SectionCard("Secondaire — effectifs inscrits", "Par section, option, classe et sexe") {
-        TableHeader(listOf("Section / option / classe" to 2.4f, "Garçons" to 1f, "Filles" to 1f, "Total" to 1f))
-        secondary.forEachIndexed { index, stat ->
-            val label = listOfNotNull(stat.sectionName, stat.optionName, stat.className).joinToString(" · ")
-            SexCountRow(label, stat.boysCount, stat.girlsCount, { onSecondary(index, it, null) }, { onSecondary(index, null, it) })
+    val unmatchedPrimary = primary.mapIndexed { index, stat -> index to stat }
+        .filter { (_, stat) -> RdcEducationSystem.cycleOf(stat.className) == null }
+    if (unmatchedPrimary.isNotEmpty()) {
+        SectionCard("Autres classes — effectifs inscrits", "Libellés hors nomenclature officielle") {
+            TableHeader(listOf("Classe" to 2f, "Garçons" to 1f, "Filles" to 1f, "Total" to 1f))
+            unmatchedPrimary.forEach { (index, stat) ->
+                SexCountRow(stat.className, stat.boysCount, stat.girlsCount, { onPrimary(index, it, null) }, { onPrimary(index, null, it) })
+            }
+            TotalsRow(unmatchedPrimary.sumOf { it.second.boysCount }, unmatchedPrimary.sumOf { it.second.girlsCount })
         }
-        TotalsRow(secondary.sumOf { it.boysCount }, secondary.sumOf { it.girlsCount })
+    }
+    listOf(EducationCycle.TRONC_COMMUN, EducationCycle.HUMANITES).forEach { cycle ->
+        val rows = secondary.mapIndexed { index, stat -> index to stat }
+            .filter { (_, stat) -> RdcEducationSystem.cycleOf(stat.className) == cycle }
+        if (rows.isNotEmpty()) {
+            SectionCard(
+                "${cycle.labelFr()} — effectifs inscrits",
+                if (cycle == EducationCycle.TRONC_COMMUN) {
+                    "7ème et 8ème années, avant orientation en humanités"
+                } else {
+                    "Par section officielle, option et classe des humanités"
+                },
+            ) {
+                TableHeader(listOf("Section / option / classe" to 2.4f, "Garçons" to 1f, "Filles" to 1f, "Total" to 1f))
+                rows.forEach { (index, stat) ->
+                    val label = listOfNotNull(stat.sectionName, stat.optionName, stat.className).joinToString(" · ")
+                    SexCountRow(label, stat.boysCount, stat.girlsCount, { onSecondary(index, it, null) }, { onSecondary(index, null, it) })
+                }
+                TotalsRow(rows.sumOf { it.second.boysCount }, rows.sumOf { it.second.girlsCount })
+            }
+        }
+    }
+    val unmatchedSecondary = secondary.mapIndexed { index, stat -> index to stat }
+        .filter { (_, stat) -> RdcEducationSystem.cycleOf(stat.className) == null }
+    if (unmatchedSecondary.isNotEmpty()) {
+        SectionCard("Autres classes secondaires", "Libellés hors nomenclature officielle") {
+            TableHeader(listOf("Section / option / classe" to 2.4f, "Garçons" to 1f, "Filles" to 1f, "Total" to 1f))
+            unmatchedSecondary.forEach { (index, stat) ->
+                val label = listOfNotNull(stat.sectionName, stat.optionName, stat.className).joinToString(" · ")
+                SexCountRow(label, stat.boysCount, stat.girlsCount, { onSecondary(index, it, null) }, { onSecondary(index, null, it) })
+            }
+            TotalsRow(unmatchedSecondary.sumOf { it.second.boysCount }, unmatchedSecondary.sumOf { it.second.girlsCount })
+        }
     }
 }
 
@@ -148,7 +197,7 @@ private fun AgeSexTab(
     val classes = stats.map { it.className }.distinct()
     SectionCard(
         "Élèves par classe, âge et sexe",
-        "Saisissez les effectifs pour chaque âge. 19+ regroupe les élèves de 19 ans et plus.",
+        "Classes officielles RDC. Saisissez les effectifs pour chaque âge (3 ans à 19+).",
     ) {
         val scroll = rememberScrollState()
         Column(Modifier.horizontalScroll(scroll), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -302,11 +351,19 @@ private fun EnrollmentTab(
 
 @Composable
 private fun CertificationTab(stats: List<com.schoolstats.domain.model.CertificationResult>) {
-    SectionCard("Épreuves certificatives") {
+    SectionCard(
+        "Épreuves certificatives officielles",
+        "TENAFEP (6ème primaire), TENASOSP (8ème année) et EXETAT (4ème des Humanités)",
+    ) {
         stats.forEach {
+            val exam = RdcEducationSystem.exams.firstOrNull { official -> official.name == it.examName }
             Text(
-                "${it.examName} ${it.className}: ${it.successesCount}/${it.participantsCount} (${it.successRate?.let { r -> "%.1f%%".format(r) }.orEmpty()})",
+                "${it.examName} — ${it.className}: ${it.successesCount}/${it.participantsCount} (${it.successRate?.let { r -> "%.1f%%".format(r) }.orEmpty()})",
+                fontWeight = FontWeight.Medium,
             )
+            exam?.let { official ->
+                Text(official.description, style = MaterialTheme.typography.bodySmall)
+            }
         }
     }
 }

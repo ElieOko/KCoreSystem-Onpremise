@@ -28,9 +28,12 @@ CREATE TYPE submission_status AS ENUM (
 );
 
 CREATE TYPE school_type AS ENUM (
+    'MATERNELLE',
     'PRIMAIRE',
     'SECONDAIRE',
-    'PRIMAIRE_ET_SECONDAIRE'
+    'MATERNELLE_ET_PRIMAIRE',
+    'PRIMAIRE_ET_SECONDAIRE',
+    'COMPLET'
 );
 
 CREATE TYPE school_ownership AS ENUM (
@@ -53,6 +56,7 @@ CREATE TYPE education_level AS ENUM (
 );
 
 CREATE TYPE teacher_branch AS ENUM (
+    'MATERNELLE',
     'PRIMAIRE',
     'SECONDAIRE_GENERAL',
     'SECONDAIRE_TECHNIQUE',
@@ -208,7 +212,7 @@ CREATE TABLE user_roles (
 
 CREATE TABLE primary_class_configs (
     id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name                TEXT NOT NULL,
+    name                TEXT NOT NULL UNIQUE,
     order_index         INT NOT NULL DEFAULT 0,
     school_type_filter  school_type,
     is_active           BOOLEAN NOT NULL DEFAULT TRUE,

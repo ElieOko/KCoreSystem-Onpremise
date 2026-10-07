@@ -67,7 +67,7 @@ fun AnalyticsScreen(
         GroupedBarChartCard(
             title = "Élèves par classe",
             data = census.byClass.map {
-                ChartDatum(it.className.replace(" année", ""), it.boysCount.toFloat(), secondary = it.girlsCount.toFloat())
+                ChartDatum(com.schoolstats.domain.education.RdcEducationSystem.shortName(it.className), it.boysCount.toFloat(), secondary = it.girlsCount.toFloat())
             },
         )
         GroupedBarChartCard(

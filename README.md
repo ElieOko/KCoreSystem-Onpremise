@@ -87,7 +87,7 @@ Connectez-vous avec `demo@local` / `demo` — des données de démonstration son
 | Authentification | Supabase + mode démo (Desktop et Android) |
 | Dashboard | Cartes KPI + analyses |
 | Écoles | CRUD, recherche, sync offline |
-| Statistiques | Effectifs, âge/sexe, enseignants, administratif, ouvriers, inscriptions, certificatives |
+| Statistiques | Effectifs officiels EPST (maternelle, primaire, 7ème-8ème, humanités), âge/sexe, enseignants, administratif, ouvriers, inscriptions, TENAFEP / TENASOSP / EXETAT |
 | Déclarations | Liste filtrable par statut |
 | Validation | Valider, rejeter, demander correction |
 | Centralisation | Fichier central agrégé sous-division |

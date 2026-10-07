@@ -58,9 +58,12 @@ enum class SyncStatus {
 }
 
 enum class SchoolType {
+    MATERNELLE,
     PRIMAIRE,
     SECONDAIRE,
-    PRIMAIRE_ET_SECONDAIRE
+    MATERNELLE_ET_PRIMAIRE,
+    PRIMAIRE_ET_SECONDAIRE,
+    COMPLET
 }
 
 enum class SchoolOwnership {
@@ -83,6 +86,7 @@ enum class EducationLevel {
 }
 
 enum class TeacherBranch {
+    MATERNELLE,
     PRIMAIRE,
     SECONDAIRE_GENERAL,
     SECONDAIRE_TECHNIQUE,
@@ -212,20 +216,33 @@ enum class AuditAction {
 | submission_id | UUID | FK |
 | school_id | UUID | FK (dénormalisé pour RLS) |
 | school_year_id | UUID | FK |
-| class_name | String | Ex: "1ère année" |
+| class_name | String | Classe officielle EPST, ex. "1ère année primaire" |
 | class_order | Int | Ordre affichage |
 | boys_count | Int | Garçons ≥ 0 |
 | girls_count | Int | Filles ≥ 0 |
 | total_count | Int | **Calculé** = boys + girls |
 
+### Classes officielles (RDC / EPST)
+
+Le référentiel Kotlin `RdcEducationSystem` et les tables `primary_class_configs` / `secondary_class_configs` portent les classes officielles :
+
+| Cycle | Classes | Épreuve |
+|-------|---------|---------|
+| Maternelle | 1ère, 2ème, 3ème maternelle | — |
+| Primaire | 1ère à 6ème année primaire | TENAFEP (6ème) |
+| Tronc commun | 7ème année (1ère secondaire), 8ème année (2ème secondaire) | TENASOSP (8ème) |
+| Humanités | 1ère à 4ème des Humanités | EXETAT (4ème) |
+
+Sections officielles du secondaire : Tronc commun, Humanités Générales, Pédagogiques, Techniques, Professionnelles.
+
 ### PrimaryClassConfig (configuration admin)
 | Champ | Type | Description |
 |-------|------|-------------|
 | id | UUID | PK |
-| name | String | Nom classe |
+| name | String | Nom officiel de la classe |
 | order_index | Int | Ordre |
 | is_active | Boolean | Active |
-| school_type_filter | SchoolType? | Filtre optionnel |
+| school_type_filter | SchoolType? | Filtre optionnel (maternelle / primaire) |
 
 ---
 
@@ -235,7 +252,7 @@ enum class AuditAction {
 | Champ | Type | Description |
 |-------|------|-------------|
 | id | UUID | PK |
-| name | String | Ex: "Enseignement Général" |
+| name | String | Ex: "Humanités Générales" |
 | code | String | Code |
 | order_index | Int | Ordre |
 | is_active | Boolean | Active |

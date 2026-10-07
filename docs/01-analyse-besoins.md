@@ -96,15 +96,16 @@ flowchart LR
 ### 4.1 Référentiels organisationnels
 - Provinces, provinces éducationnelles, sous-divisions, écoles
 - Années scolaires actives
-- Configuration dynamique : classes primaires, sections/options secondaires, types d'épreuves
+- Configuration dynamique : classes officielles EPST (maternelle, primaire, secondaire), sections/options des humanités, types d'épreuves
 
 ### 4.2 Collecte statistique (par école, par année)
-1. **Primaire** — effectifs par classe et sexe
-2. **Secondaire** — effectifs par section, option, classe et sexe
-3. **Enseignants** — par niveau d'études, branche et sexe
-4. **Début d'année** — inscriptions initiales par classe
-5. **Fin d'année** — effectifs finaux + calculs (différence, rétention, abandon)
-6. **Épreuves certificatives** — inscrits, participants, réussites, échecs
+1. **Maternelle** — 1ère, 2ème et 3ème maternelle, par sexe
+2. **Primaire** — 1ère à 6ème année primaire, par sexe
+3. **Secondaire** — 7ème et 8ème (tronc commun), puis 1ère à 4ème des Humanités par section/option officielle
+4. **Enseignants** — par niveau d'études, branche (maternelle, primaire, humanités) et sexe
+5. **Début d'année** — inscriptions initiales par classe officielle
+6. **Fin d'année** — effectifs finaux + calculs (différence, rétention, abandon)
+7. **Épreuves certificatives** — TENAFEP, TENASOSP, EXETAT
 
 ### 4.3 Workflow administratif
 - Suivi des soumissions par école

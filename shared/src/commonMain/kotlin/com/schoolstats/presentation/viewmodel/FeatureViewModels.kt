@@ -60,16 +60,12 @@ data class StatisticsUiState(
     val secondary: List<SecondaryStudentStat> = CensusDefaults.emptySecondary(),
     val teachers: List<TeacherStatDetail> = CensusDefaults.emptyTeachers(),
     val enrollments: List<EnrollmentStat> = CensusDefaults.emptyEnrollments(),
-    val certifications: List<CertificationResult> = defaultCerts(),
+    val certifications: List<CertificationResult> = CensusDefaults.emptyCertifications(),
     val ageSex: List<AgeSexStat> = CensusDefaults.emptyAgeSex(),
     val workers: List<WorkerStat> = CensusDefaults.emptyWorkers(),
     val adminStaff: List<AdminStaffStat> = CensusDefaults.emptyAdminStaff(),
     val message: String? = null,
     val error: String? = null,
-)
-
-private fun defaultCerts() = listOf(
-    CertificationResult(examName = "TENAFEP", className = "6ème année", registeredCount = 0, participantsCount = 0, successesCount = 0, boysSucceeded = 0, girlsSucceeded = 0),
 )
 
 class StatisticsViewModel(

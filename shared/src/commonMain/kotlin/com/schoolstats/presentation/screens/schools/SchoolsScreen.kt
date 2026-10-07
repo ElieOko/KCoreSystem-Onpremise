@@ -25,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.schoolstats.domain.model.School
+import com.schoolstats.domain.model.SchoolType
+import com.schoolstats.domain.model.labelFr
 import com.schoolstats.presentation.viewmodel.SchoolsViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -78,7 +80,7 @@ private fun SchoolRow(school: School, onEdit: () -> Unit) {
         ) {
             Column {
                 Text(school.name, fontWeight = FontWeight.SemiBold)
-                Text("Code: ${school.schoolCode} | Type: ${school.schoolType.name}")
+                Text("Code: ${school.schoolCode} | Type: ${school.schoolType.labelFr()}")
                 school.subdivisionName?.let { Text("Sous-Division: $it", style = MaterialTheme.typography.bodySmall) }
                 school.submissionStatus?.let { Text("Déclaration: ${it.name}", style = MaterialTheme.typography.bodySmall) }
             }
@@ -97,6 +99,7 @@ private fun SchoolFormDialog(
     var code by remember(school.id) { mutableStateOf(school.schoolCode) }
     var subdivisionId by remember(school.id) { mutableStateOf(school.subdivisionId) }
     var city by remember(school.id) { mutableStateOf(school.city.orEmpty()) }
+    var schoolType by remember(school.id) { mutableStateOf(school.schoolType) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -107,6 +110,13 @@ private fun SchoolFormDialog(
                 OutlinedTextField(code, { code = it }, label = { Text("Code école") }, modifier = Modifier.fillMaxWidth())
                 OutlinedTextField(subdivisionId, { subdivisionId = it }, label = { Text("ID Sous-Division") }, modifier = Modifier.fillMaxWidth())
                 OutlinedTextField(city, { city = it }, label = { Text("Ville") }, modifier = Modifier.fillMaxWidth())
+                Text("Type d'établissement EPST", style = MaterialTheme.typography.bodySmall)
+                TextButton(
+                    onClick = {
+                        val types = SchoolType.entries
+                        schoolType = types[(types.indexOf(schoolType) + 1) % types.size]
+                    },
+                ) { Text(schoolType.labelFr()) }
             }
         },
         confirmButton = {
@@ -117,6 +127,7 @@ private fun SchoolFormDialog(
                         schoolCode = code,
                         subdivisionId = subdivisionId,
                         city = city.ifBlank { null },
+                        schoolType = schoolType,
                     ),
                 )
             }) { Text("Enregistrer") }
