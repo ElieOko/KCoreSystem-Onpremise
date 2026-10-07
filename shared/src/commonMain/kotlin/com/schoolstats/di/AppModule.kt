@@ -53,12 +53,20 @@ import com.schoolstats.presentation.viewmodel.StatisticsViewModel
 import com.schoolstats.presentation.viewmodel.SubmissionsViewModel
 import com.schoolstats.presentation.viewmodel.UsersViewModel
 import com.schoolstats.presentation.viewmodel.ValidationViewModel
-import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val dataModule = module {
     single { SupabaseClientProvider() }
-    single { SchoolStatsDatabase(createDatabaseDriverFactory().createDriver()) }
+    single {
+        runCatching { SchoolStatsDatabase(createDatabaseDriverFactory().createDriver()) }
+            .getOrElse { error ->
+                throw IllegalStateException(
+                    "Échec de la base locale : ${error.message ?: error::class.simpleName}",
+                    error,
+                )
+            }
+    }
     single { LocalSchoolDataSource(get()) }
     single { LocalSubmissionDataSource(get()) }
     single { LocalStatisticsDataSource(get()) }
@@ -100,16 +108,16 @@ val domainModule = module {
 }
 
 val viewModelModule = module {
-    viewModel { AuthViewModel(get(), get(), get()) }
-    viewModel { DashboardViewModel(get(), get()) }
-    viewModel { SchoolsViewModel(get(), get(), get()) }
-    viewModel { SubmissionsViewModel(get()) }
-    viewModel { StatisticsViewModel(get(), get()) }
-    viewModel { ValidationViewModel(get()) }
-    viewModel { CentralizationViewModel(get(), get()) }
-    viewModel { ReportsViewModel(get(), get()) }
-    viewModel { UsersViewModel(get()) }
-    viewModel { SettingsViewModel() }
+    viewModelOf(::AuthViewModel)
+    viewModelOf(::DashboardViewModel)
+    viewModelOf(::SchoolsViewModel)
+    viewModelOf(::SubmissionsViewModel)
+    viewModelOf(::StatisticsViewModel)
+    viewModelOf(::ValidationViewModel)
+    viewModelOf(::CentralizationViewModel)
+    viewModelOf(::ReportsViewModel)
+    viewModelOf(::UsersViewModel)
+    viewModelOf(::SettingsViewModel)
 }
 
 val appModules = listOf(dataModule, domainModule, viewModelModule)

@@ -103,7 +103,7 @@ Connectez-vous avec `demo@local` / `demo` — des données de démonstration son
 
 ### Packaging Windows (`.exe`)
 
-Sur une machine Windows avec JDK 21. Le runtime embarqué inclut le module `java.sql` (requis par SQLDelight / SQLite). Sans ce module, l’installeur plante avec `java/sql/DriverManager`.
+Sur une machine Windows avec JDK 21. Le runtime embarqué inclut le JRE complet (`java.sql`, HTTPS, XML). ProGuard est désactivé pour ne pas casser Koin / les ViewModels. Sans cela, l’installeur peut planter avec `java/sql/DriverManager` ou `Could not create instance for factory AuthViewModel`.
 
 ```bat
 gradlew.bat :desktopApp:createDistributable
