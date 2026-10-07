@@ -31,6 +31,7 @@ dependencies {
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.androidx.lifecycle.viewmodelCompose)
     implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.sqldelight.sqlite.driver)
 }
 
 compose.desktop {
@@ -40,10 +41,22 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Exe, TargetFormat.Msi, TargetFormat.Dmg, TargetFormat.Deb)
             packageName = "KCoreSystem"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.1"
             description = "Collecte et centralisation des statistiques scolaires"
             vendor = "KCoreSystem"
             copyright = "© 2026 KCoreSystem"
+            // jlink omits modules only used reflectively (SQLDelight JDBC, HTTPS, XML/POI).
+            modules(
+                "java.sql",
+                "java.naming",
+                "java.logging",
+                "java.management",
+                "java.xml",
+                "java.net.http",
+                "jdk.crypto.ec",
+                "jdk.unsupported",
+                "jdk.localedata",
+            )
             windows {
                 menuGroup = "KCoreSystem"
                 upgradeUuid = "8b7c1d2e-4a5f-4c6b-9e10-2f3a4b5c6d7e"
