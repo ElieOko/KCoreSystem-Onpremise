@@ -94,7 +94,7 @@ fun DashboardContent(stats: DashboardStats, compact: Boolean = false) {
         GroupedBarChartCard(
             title = "Effectifs par classe",
             data = census.byClass.map {
-                ChartDatum(it.className.replace(" année", ""), it.boysCount.toFloat(), secondary = it.girlsCount.toFloat())
+                ChartDatum(com.schoolstats.domain.education.RdcEducationSystem.shortName(it.className), it.boysCount.toFloat(), secondary = it.girlsCount.toFloat())
             },
         )
         AdaptiveChartStack(

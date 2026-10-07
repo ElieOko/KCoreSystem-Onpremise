@@ -25,9 +25,21 @@ enum class SyncStatus {
 }
 
 enum class SchoolType {
+    MATERNELLE,
     PRIMAIRE,
     SECONDAIRE,
+    MATERNELLE_ET_PRIMAIRE,
     PRIMAIRE_ET_SECONDAIRE,
+    COMPLET,
+}
+
+fun SchoolType.labelFr(): String = when (this) {
+    SchoolType.MATERNELLE -> "Maternelle"
+    SchoolType.PRIMAIRE -> "Primaire"
+    SchoolType.SECONDAIRE -> "Secondaire"
+    SchoolType.MATERNELLE_ET_PRIMAIRE -> "Maternelle et primaire"
+    SchoolType.PRIMAIRE_ET_SECONDAIRE -> "Primaire et secondaire"
+    SchoolType.COMPLET -> "Complet (maternelle, primaire, secondaire)"
 }
 
 enum class SchoolOwnership {
@@ -55,6 +67,7 @@ fun EducationLevel.labelFr(): String = when (this) {
 }
 
 enum class TeacherBranch {
+    MATERNELLE,
     PRIMAIRE,
     SECONDAIRE_GENERAL,
     SECONDAIRE_TECHNIQUE,
@@ -63,10 +76,11 @@ enum class TeacherBranch {
 }
 
 fun TeacherBranch.labelFr(): String = when (this) {
+    TeacherBranch.MATERNELLE -> "Maternelle"
     TeacherBranch.PRIMAIRE -> "Primaire"
-    TeacherBranch.SECONDAIRE_GENERAL -> "Secondaire général"
-    TeacherBranch.SECONDAIRE_TECHNIQUE -> "Secondaire technique"
-    TeacherBranch.SECONDAIRE_PROFESSIONNEL -> "Secondaire professionnel"
+    TeacherBranch.SECONDAIRE_GENERAL -> "Humanités générales"
+    TeacherBranch.SECONDAIRE_TECHNIQUE -> "Humanités techniques"
+    TeacherBranch.SECONDAIRE_PROFESSIONNEL -> "Humanités professionnelles"
     TeacherBranch.AUTRES -> "Autres"
 }
 
@@ -104,7 +118,7 @@ fun AdminStaffFunction.isSecondarySpecific(): Boolean = this in setOf(
 )
 
 object StudentAges {
-    val values: List<Int> = (6..18).toList() + 19
+    val values: List<Int> = (3..18).toList() + 19
     const val PLUS_AGE = 19
     fun label(age: Int): String = if (age >= PLUS_AGE) "19+" else age.toString()
 }

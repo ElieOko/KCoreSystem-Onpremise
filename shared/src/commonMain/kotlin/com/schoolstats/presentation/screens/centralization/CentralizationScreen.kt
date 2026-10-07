@@ -84,10 +84,10 @@ fun CentralizationScreen(
             },
         )
         GroupedBarChartCard(
-            title = "Effectifs par classe (primaire)",
-            subtitle = "Garçons et filles agrégés au niveau de la sous-division",
+            title = "Effectifs par classe officielle",
+            subtitle = "Maternelle et primaire — nomenclature EPST",
             data = stats.byClass.map {
-                ChartDatum(it.className.replace(" année", ""), it.boysCount.toFloat(), secondary = it.girlsCount.toFloat())
+                ChartDatum(com.schoolstats.domain.education.RdcEducationSystem.shortName(it.className), it.boysCount.toFloat(), secondary = it.girlsCount.toFloat())
             },
         )
         GroupedBarChartCard(
@@ -144,7 +144,7 @@ fun CentralizationScreen(
             }
         }
 
-        SectionCard("A. Effectifs inscrits par classe") {
+        SectionCard("A. Effectifs inscrits par classe officielle") {
             TableHeader(listOf("Classe" to 2f, "Garçons" to 1f, "Filles" to 1f, "Total" to 1f))
             stats.byClass.forEach {
                 Row(Modifier.fillMaxWidth()) {

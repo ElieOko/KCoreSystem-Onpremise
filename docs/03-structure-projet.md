@@ -105,6 +105,8 @@ KCoreSystem/
         │   │   │   │   ├── SubmissionStatus.kt
         │   │   │   │   ├── SyncStatus.kt
         │   │   │   │   ├── PrimaryClassStat.kt
+        │   │   │   ├── education/
+        │   │   │   │   └── RdcEducationSystem.kt
         │   │   │   │   ├── SecondaryStudentStat.kt
         │   │   │   │   ├── TeacherStat.kt
         │   │   │   │   ├── EnrollmentStat.kt
