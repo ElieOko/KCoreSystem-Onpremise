@@ -38,14 +38,19 @@ compose.desktop {
     application {
         mainClass = "com.schoolstats.desktop.MainKt"
 
+        buildTypes.release.proguard {
+            isEnabled.set(false)
+            configurationFiles.from(project.file("proguard-desktop.pro"))
+        }
+
         nativeDistributions {
             targetFormats(TargetFormat.Exe, TargetFormat.Msi, TargetFormat.Dmg, TargetFormat.Deb)
             packageName = "KCoreSystem"
-            packageVersion = "1.0.1"
+            packageVersion = "1.0.2"
             description = "Collecte et centralisation des statistiques scolaires"
             vendor = "KCoreSystem"
             copyright = "© 2026 KCoreSystem"
-            // jlink omits modules only used reflectively (SQLDelight JDBC, HTTPS, XML/POI).
+            includeAllModules = true
             modules(
                 "java.sql",
                 "java.naming",

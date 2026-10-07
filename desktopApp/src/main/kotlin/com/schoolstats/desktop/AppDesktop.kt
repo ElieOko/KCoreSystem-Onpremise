@@ -27,14 +27,20 @@ import com.schoolstats.presentation.viewmodel.AuthViewModel
 import com.schoolstats.presentation.viewmodel.SettingsViewModel
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AppDesktop() {
-    val settingsViewModel: SettingsViewModel = koinViewModel()
+    val settingsResult = rememberSafeViewModel<SettingsViewModel>()
+    val authResult = rememberSafeViewModel<AuthViewModel>()
+    val startupError = settingsResult.exceptionOrNull() ?: authResult.exceptionOrNull()
+    if (startupError != null) {
+        StartupErrorScreen(startupError)
+        return
+    }
+    val settingsViewModel = settingsResult.getOrThrow()
+    val authViewModel = authResult.getOrThrow()
     val settings by settingsViewModel.uiState.collectAsState()
     SchoolStatsTheme(darkTheme = settings.darkTheme) {
-        val authViewModel: AuthViewModel = koinViewModel()
         val syncManager: SyncManager = koinInject()
         val authState by authViewModel.uiState.collectAsState()
         val syncState by syncManager.state.collectAsState()
